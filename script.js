@@ -51,3 +51,4 @@ if (openButton) {
 if (rsvpForm) {
   rsvpForm.addEventListener("submit", handleRsvpSubmit);
 }
+
