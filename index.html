@@ -1,87 +1,54 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#2f121b" />
-  <title>Gavin & Jessica | Wedding Invitation</title>
+  <meta name="theme-color" content="#020617" />
+  <title>Gavin & Jessica | Wedding Photo Upload</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-      </section>
+  <div class="page-shell">
     <main class="card">
-      <section class="hero-panel">
-        <div class="envelope-shell">
-  <div class="envelope" id="envelope">
-    <div class="envelope-body"></div>
-    <div class="envelope-flap"></div>
-    <div class="seal"></div>
-    <div class="letter">
-      <p class="eyebrow">A personal invitation</p>
-      <h1>Gavin & Jessica</h1>
-      <p class="event">invite you to celebrate their wedding at</p>
-      <p class="details">Lartington Hall · 28 Feb 2027 · 12:30 PM</p>
-    </div>
-  </div>
-</div>
-        <div class="button-row">
-          <button class="secondary-button" id="openButton" type="button">Open the invitation</button>
-          <a class="tertiary-button" href="rsvp.html">RSVP and details</a>
+      <section class="invitation animate-card">
+        <p class="eyebrow">Wedding Photo Drop</p>
+        <h1>Gavin & Jessica</h1>
+        <p class="intro">Thank you so much for celebrating the best day of our lives. Please upload all of your photos, we don't want to miss a second!</p>
+        <a class="primary-button button-pulse" id="uploadButton" href="#" target="_blank" rel="noopener">Upload photos</a>
+      </section>
+
+      <section class="preview fade-in-up">
+        <img class="hero" src="https://images.unsplash.com/photo-1490818387583-1baba5e638af?auto=format&fit=crop&w=1400&q=80" alt="Wedding celebration" />
+      </section>
+
+      <section class="details fade-in-up delay">
+        <div class="section">
+          <h2>Share the moments</h2>
+          <p>This page is made for wedding guests to quickly send their favorite moments from the celebration, straight from their phone.</p>
+          <ol>
+            <li>Tap the upload button.</li>
+            <li>Select photos from your camera roll.</li>
+            <li>Complete the secure upload in Dropbox.</li>
+          </ol>
+        </div>
+
+        <div class="section privacy">
+          <h2>Private and safe</h2>
+          <p>Only the couple can access files. This invitation is a simple, guest-facing entry point to a private Dropbox file request.</p>
+        </div>
+
+        <div class="qr-block fade-in-up delay-2">
+          <p>Need another phone? Scan this QR code to open the upload page instantly.</p>
+          <div id="qrCode"></div>
         </div>
       </section>
-      <div class="details-panel" id="detailsPanel">
-        <section class="section story-panel">
-          <div class="text-block">
-            <p class="eyebrow">Our story</p>
-            <h2>From first hello to "I do"</h2>
-            <p>Our story began in the summer of 2021, when Gavin joined Match.com “just to support a friend,” then immediately forgot that noble mission and messaged Jess instead. Against all known laws of online dating, it became one of those rare internet matches that actually works; the kind people swear only happens in adverts.
-            <p>We met at South Shields seafront for what was meant to be a quick chat. Instead, we talked for so long that the pub had to politely escort us out because we didn’t notice it was closing. It was the kind of first date that makes you think, “Okay… either this is fate, or we’ve both accidentally catfished each other in a good way.”
-           <p>Since then, life together has been a blend of romance, chaos, and Gavin’s questionable navigation skills. With holidays to Tenerife, London, and Japan, where Gavin managed to get us lost in Shinjuku Station for hours while searching for Godzilla’s head. We eventually ended up four miles in the wrong direction, wandering through the business district like two tourists who’d lost both the plot and the map.</p>
-           <p>In January 2024, we bought our first home. Within a week, we also adopted our dog, Zico. Jess had rules: small to medium dog, sensible breed, manageable size. Gavin ignored every single one. He returned with a 50kg German Shepherd–Belgian Malinois mix who has the energy of a caffeinated toddler, the opinions of a talk‑show host, and the vocal range of a foghorn. He loves everyone, never stops talking, and argues with Gavin daily, and loudly, like a furry, four‑legged union rep, often winning.</p>
-           <p>That summer, Gavin proposed, dropping to one knee like a budget Disney prince who’d rehearsed this moment in his head a thousand times. Jess, five duck‑sauce cocktails deep, responded with the immortal words:
-“Are you serious or taking the piss?”  
-Gavin remained on one knee long enough to consider early retirement, but eventually she said yes.</p>
-<p>Jess insisted on a ruby ring, not because she “didn’t want anything too expensive,” but because ruby is the birthstone they share. Born 368 days apart it felt like the perfect symbol of two lives that were always meant to meet.</p>
-<p>Now, after years of travel, laughter, late‑night conversations, and one very spoiled dog, we’re ready for the next chapter; and we can't wait to celebrate it with you.</p>
-          </div>
-          <div class="photo-grid">
-            <figure class="photo-card">
-              <img src="assets/tenerife.jpg" alt="Special moment" class="photo-image" />
-              <figcaption>Special moment</figcaption>
-            </figure>
-            <figure class="photo-card">
-              <img src="assets/all of us.jpg" alt="Family memory" class="photo-image" />
-              <figcaption>Family memory</figcaption>
-            </figure>
-            <figure class="photo-card">
-              <img src="assets/godzilla.jpg" alt="Couple portrait" class="photo-image" />
-              <figcaption>Couple portrait</figcaption>
-            </figure>
-          </div>
-        </section>
-
-        <section class="section details-grid">
-          <article>
-            <h3>Venue</h3>
-            <p>Lartington Hall, County Durham. A beautiful historic estate with gardens, manor rooms, and warm hospitality.</p>
-          </article>
-          <article>
-            <h3>Event schedule</h3>
-            <p>12:30 PM ceremony, followed by reception and dinner. Please arrive 20 minutes early for seating.</p>
-          </article>
-          <article>
-            <h3>RSVP</h3>
-            <p>Confirm your attendance on the RSVP page, or email <a href="mailto:rsvp@yourdomain.com">rsvp@yourdomain.com</a>.</p>
-          </article>
-        </section>
-      </div>
     </main>
   </div>
 
-  <script src="main.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

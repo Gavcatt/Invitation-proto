@@ -1,95 +1,25 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#2f121b" />
-  <title>Gavin & Jessica | RSVP</title>
+  <meta name="theme-color" content="#020617" />
+  <title>RSVP & Photo Upload</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="page-shell">
     <main class="card">
-      <section class="hero-panel">
-        <p class="eyebrow">Please let us know</p>
-        <h1>RSVP</h1>
-        <p class="intro">Confirm your attendance at Lartington Hall on 28 February 2027 at 12:30 PM. Your response helps us plan the day perfectly.</p>
-      </section>
-
-      <section class="form-panel">
-        <form id="rsvpForm" action="https://formsubmit.co/your-email@example.com" method="POST">
-          <div class="form-grid">
-            <div class="field-group">
-              <label for="fullName">Full name</label>
-              <input class="form-field" id="fullName" name="fullName" type="text" required placeholder="Your name" />
-            </div>
-
-            <div class="field-group">
-              <label for="email">Email address</label>
-              <input class="form-field" id="email" name="email" type="email" required placeholder="you@example.com" />
-            </div>
-
-            <fieldset class="field-group radio-group">
-              <legend>Will you attend?</legend>
-              <label><input type="radio" name="attending" value="Yes" checked /> Yes, I will be there</label>
-              <label><input type="radio" name="attending" value="No" /> Sorry, I cannot attend</label>
-            </fieldset>
-
-            <div class="field-group">
-              <label for="guests">Number of guests</label>
-              <select class="form-field" id="guests" name="guests">
-                <option value="1">Just me</option>
-                <option value="2">Me + 1</option>
-                <option value="3">Me + 2</option>
-                <option value="4">Me + 3</option>
-              </select>
-            </div>
-
-            <div class="field-group full-width">
-              <label for="dietary">Dietary preferences</label>
-              <textarea class="form-field" id="dietary" name="dietary" rows="4" placeholder="Vegetarian, allergies, or anything else"></textarea>
-            </div>
-
-            <div class="field-group full-width">
-              <label for="message">Message for the couple</label>
-              <textarea class="form-field" id="message" name="message" rows="4" placeholder="Any notes, requests, or a little hello"></textarea>
-            </div>
-          </div>
-
-          <input type="hidden" name="_captcha" value="false" />
-          <input type="hidden" name="_next" value="https://your-domain.com/wedding-invitation/rsvp.html" />
-
-          <div class="form-footer">
-            <button class="secondary-button submit-button" type="submit">Submit RSVP</button>
-            <div class="form-note">Your response is saved locally in the browser and can be emailed when you replace the placeholder address.</div>
-          </div>
-        </form>
-
-        <div class="success-toast" id="successMessage" hidden>
-          <strong>Thank you.</strong> Your RSVP has been recorded.
-        </div>
-      </section>
-
-      <section class="details-grid">
-        <article>
-          <h3>How it works</h3>
-          <p>This RSVP form records responses locally in case your email endpoint is not configured yet. For live email delivery, replace the form action with your own FormSubmit or backend endpoint.</p>
-        </article>
-        <article>
-          <h3>Need help?</h3>
-          <p>If you have trouble submitting, email us directly at <a href="mailto:rsvp@yourdomain.com">rsvp@yourdomain.com</a>. We'll make sure your attendance is confirmed.</p>
-        </article>
-      </section>
-
-      <section class="section">
-        <a class="tertiary-button" href="index.html">Back to invitation</a>
+      <section class="invitation animate-card">
+        <p class="eyebrow">RSVP & Photos</p>
+        <h1>Join us</h1>
+        <p class="intro">Thank you for celebrating with us. Use the photo upload page to share your favourite moments, and email RSVP details to <a href="mailto:rsvp@yourdomain.com">rsvp@yourdomain.com</a>.</p>
+        <a class="primary-button button-pulse" href="index.html">Back to upload</a>
       </section>
     </main>
   </div>
-
-  <script src="script.js"></script>
 </body>
 </html>
