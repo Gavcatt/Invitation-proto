@@ -1,4 +1,5 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzvbla9fRb6D-wCxQ6AuaoY2ikKweqJp02uuJkrrYXOprgYFPimb0RjVdFNJ3G4KjPq/exec'
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzD54hqzFFOQqfAM-iWDdrECD-q29sZUVa12LkQ0KE/dev';
+
 const codeInput = document.getElementById('rsvp-code');
 const lookupBtn = document.getElementById('lookup-btn');
 const codeMessage = document.getElementById('code-message');
@@ -129,74 +130,4 @@ function handleSubmit(e) {
     return;
   }
 
-  const guests = [];
-
-  for (let i = 1; i <= currentMaxGuests; i++) {
-    const nameEl = document.getElementById(`guest-name-${i}`);
-    const attendingEl = document.getElementById(`guest-attending-${i}`);
-    const menuEl = document.getElementById(`guest-menu-${i}`);
-    const dietaryEl = document.getElementById(`guest-dietary-${i}`);
-
-    const name = nameEl.value.trim();
-    if (!name) continue; // skip unused
-
-    const attending = attendingEl.value === 'yes';
-
-    guests.push({
-      name,
-      attending,
-      menu: menuEl.value,
-      dietary: dietaryEl.value.trim()
-    });
-  }
-
-  if (!guests.length) {
-    showMessage(formMessage, 'Please enter at least one guest name.', 'error');
-    return;
-  }
-
-  const submitBtn = rsvpForm.querySelector('button[type="submit"]');
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Submitting...';
-
-  fetch(SCRIPT_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      action: 'submit',
-      code: currentCode,
-      guests
-    })
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (!data.success) {
-        showMessage(formMessage, data.message || 'There was a problem submitting your RSVP.', 'error');
-        return;
-      }
-
-      showMessage(formMessage, 'Thank you! Your RSVP has been recorded.', 'success');
-      rsvpForm.reset();
-      formSection.classList.add('hidden');
-    })
-    .catch(err => {
-      console.error(err);
-      showMessage(formMessage, 'Error contacting server.', 'error');
-    })
-    .finally(() => {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit RSVP';
-    });
-}
-
-function showMessage(el, text, type) {
-  el.textContent = text || '';
-  el.classList.remove('error', 'success');
-  if (type) el.classList.add(type);
-}
-
-function clearMessage(el) {
-  el.textContent = '';
-  el.classList.remove('error', 'success');
-}
-
+  const guests
