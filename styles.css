@@ -1,24 +1,6 @@
-﻿/* Kill the 2‑column grid for the story section everywhere */
-.story-panel {
-  display: block !important;
-  max-width: 100% !important;
-  padding: 2rem !important;
-}
-
-/* Make sure the image block just stacks under the text */
-.photo-grid {
-  margin-top: 2rem !important;
-}
-
-/* Extra safety: no horizontal overflow from inside */
-.story-panel * {
-  max-width: 100% !important;
-}
-
-/* -------------------------------------------------------
-   GLOBAL
+﻿/* -------------------------------------------------------
+   GLOBAL & ROOT RESET
 ------------------------------------------------------- */
-
 :root {
   color-scheme: light;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -28,12 +10,14 @@
   color: #f3ece7;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
   background-attachment: fixed;
@@ -50,18 +34,21 @@ body::before {
 }
 
 /* -------------------------------------------------------
-   PAGE LAYOUT
+   LAYOUT WRAPPERS (CENTERS CONTENT PERFECTLY)
 ------------------------------------------------------- */
-
 .page-shell {
   display: flex;
   justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 100vh;
   padding: 2rem 1rem 3rem;
 }
 
 .card {
   position: relative;
   width: min(100%, 980px);
+  margin: 0 auto;
   overflow: visible;
   border-radius: 38px;
   background: rgba(255, 251, 247, 0.92);
@@ -77,12 +64,12 @@ body::before {
   text-align: center;
   position: relative;
   padding-bottom: 6rem;
+  width: 100%;
 }
 
 /* -------------------------------------------------------
-   ENVELOPE SYSTEM — CLEAN + CONSISTENT
+   ENVELOPE SYSTEM
 ------------------------------------------------------- */
-
 .envelope-shell {
   display: flex;
   justify-content: center;
@@ -90,16 +77,24 @@ body::before {
   margin-bottom: 2rem;
   position: relative;
   min-height: 48rem;
+  width: 100%;
+  height: 480px; 
+}
+.invitation-open .envelope-shell {
+  height: 280px; 
 }
 
 .envelope {
-  position: relative;
+  position: absolute;
   width: 480px;
   height: 480px;
   transform-style: preserve-3d;
+  transition: transform 1s cubic-bezier(0.22, 1.0, 0.36, 1.0)
+}
+.invitation-open .envelope {
+  transform: translateY(180px); 
 }
 
-/* Envelope body */
 .envelope-body {
   position: absolute;
   inset: 0;
@@ -110,7 +105,6 @@ body::before {
   z-index: 1;
 }
 
-/* Flap */
 .envelope-flap {
   position: absolute;
   top: 0;
@@ -134,7 +128,6 @@ body::before {
   z-index: 5;
 }
 
-/* Seal */
 .seal {
   position: absolute;
   left: 50%;
@@ -146,6 +139,7 @@ body::before {
   background: radial-gradient(circle at 35% 35%, #0b2b13, #072312 45%, #041809 100%);
   border: 3px solid #d4af37;
   z-index: 6;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .seal::before {
@@ -159,7 +153,6 @@ body::before {
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* Letter */
 .letter {
   position: absolute;
   top: 20%;
@@ -173,13 +166,12 @@ body::before {
   box-shadow: 0 34px 70px rgba(0, 0, 0, 0.18);
   opacity: 0;
   z-index: 2;
-  transition: transform 1s cubic-bezier(0.22, 1.0, 0.36, 1.0),
-              opacity 0.9s ease;
+  transition: transform 1s cubic-bezier(0.22, 1.0, 0.36, 1.0), opacity 0.9s ease;
 }
 
 .envelope.open .letter {
   opacity: 1;
-  transform: translate(-50%, -14px);
+  transform: translate(-50%, -140px);
 }
 
 .envelope.open .envelope-flap {
@@ -187,10 +179,15 @@ body::before {
   z-index: 0;
 }
 
+.envelope.open .seal {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.6);
+  pointer-events: none;
+}
+
 /* -------------------------------------------------------
    BUTTONS
 ------------------------------------------------------- */
-
 .button-row {
   position: absolute;
   left: 50%;
@@ -200,8 +197,7 @@ body::before {
   gap: 1rem;
   flex-wrap: wrap;
   z-index: 4;
-  transition: top 1s cubic-bezier(0.22, 1.0, 0.36, 1.0),
-              opacity 0.8s ease;
+  transition: top 1s cubic-bezier(0.22, 1.0, 0.36, 1.0), opacity 0.8s ease;
 }
 
 .invitation-open .button-row {
@@ -217,42 +213,56 @@ body::before {
   color: #fff;
   font-weight: 700;
   cursor: pointer;
+  text-decoration: none;
+}
+
+.tertiary-button {
+  composes: secondary-button;
+  border: none;
+  padding: 1rem 1.8rem;
+  border-radius: 999px;
+  background: #133916;
+  border: 1px solid #d4af37;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
 }
 
 /* -------------------------------------------------------
-   DETAILS PANEL + STORY
+   DETAILS PANEL & STORY (FIXED TO RE-CENTER CONTENT)
 ------------------------------------------------------- */
-
 .details-panel {
-  position: absolute;
-  left: 50%;
-  width: min(980px, 100%);
-  top: calc(100% - 2rem);
-  transform: translate(-50%, 40px) scale(0.98);
+  position: relative; /* Fixed: Changed from absolute positioning */
+  width: 100%;
+  margin-top: 2rem;
   opacity: 0;
   visibility: hidden;
-  background: linear-gradient(135deg, rgba(19, 57, 22, 0.92),
-                                      rgba(255, 255, 255, 0.96) 70%);
+  background: linear-gradient(135deg, rgba(19, 57, 22, 0.92), rgba(255, 255, 255, 0.96) 70%);
   border-radius: 32px;
   padding: 3rem 2.4rem;
   box-shadow: 0 34px 70px rgba(0, 0, 0, 0.18);
   border: 1px solid rgba(212, 175, 55, 0.28);
-  transition: transform 1s cubic-bezier(0.22, 1.0, 0.36, 1.0),
-              opacity 1s ease,
-              visibility 1s ease;
+  transition: opacity 1s ease, visibility 1s ease, transform 1s cubic-bezier(0.22, 1.0, 0.36, 1.0);
+  transform: translateY(40px) scale(0.98);
 }
 
 .invitation-open .details-panel {
-  transform: translate(-50%, -0.5rem) scale(1);
+  transform: translateY(0) scale(1);
   opacity: 1;
   visibility: visible;
 }
 
 .story-panel {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start;
   gap: 2rem;
-  padding: 2rem;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
+  padding: 2rem !important;
   border-radius: 32px;
   background: linear-gradient(
     135deg,
@@ -261,30 +271,42 @@ body::before {
     rgba(255, 255, 255, 0.92)
   );
 }
+
+.story-panel > * {
+  flex: 1 1 0 !important;
+  max-width: 100% !important;
 }
 
 /* -------------------------------------------------------
-   PHOTO GRID — CLEAN + RESPONSIVE
+   PHOTO GRID
 ------------------------------------------------------- */
-
 .photo-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.3rem;
+  margin-top: 0 !important;
+}
+
+.photo-card {
+  margin: 0;
+  padding: 0;
 }
 
 .photo-image {
   width: 100%;
-  aspect-ratio: 2 / 3;   /* tall portrait frame */
+  aspect-ratio: 2 / 3;
   object-fit: cover;
   border-radius: 20px;
   display: block;
 }
 
+.photo-card figcaption {
+  display: none; /* Hides captions if you only want clean image blocks */
+}
+
 /* -------------------------------------------------------
    DETAILS GRID
 ------------------------------------------------------- */
-
 .details-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -292,7 +314,7 @@ body::before {
   margin-top: 2rem;
 }
 
-.details-grid > div {
+.details-grid > article {
   background: rgba(255, 255, 255, 0.92);
   border-radius: 24px;
   padding: 2rem;
@@ -301,14 +323,66 @@ body::before {
 }
 
 /* -------------------------------------------------------
-   RESPONSIVE
+   TYPOGRAPHY
 ------------------------------------------------------- */
+.letter h1,
+.letter .names {
+  font-family: 'Great Vibes', cursive;
+  font-size: 3.4rem;
+  color: #1a1a1a;
+  letter-spacing: 0.02em;
+}
 
+.letter p,
+.letter .event,
+.letter .details,
+.letter .eyebrow {
+  font-family: "Inter", serif;
+  color: #2a2a2a;
+  font-weight: 400;
+}
+
+.details-grid h3 {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.6rem;
+  color: #1a1a1a;
+  text-align: center;
+  margin-bottom: 1rem;
+  margin-top: 0;
+}
+
+.details-grid p {
+  font-family: "Inter", serif;
+  font-size: 1.2rem;
+  line-height: 1.85;
+  color: #222;
+  text-align: center;
+  font-weight: 400;
+}
+
+.page-footer {
+  text-align: center;
+  margin-top: 4rem;
+  padding: 2rem 1rem;
+  font-family: "Inter", serif;
+  font-size: 1.1rem;
+  color: #f3ece7;
+  opacity: 0.85;
+  letter-spacing: 0.04em;
+  width: 100%;
+}
+
+.page-footer .signature {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.4rem;
+  color: #d4af37;
+  margin-top: 0.6rem;
+}
+
+/* -------------------------------------------------------
+   RESPONSIVE MEDIA QUERIES
+------------------------------------------------------- */
 @media (max-width: 900px) {
-  .story-panel {
-    grid-template-columns: 1fr;
-  }
-
   .details-grid {
     grid-template-columns: 1fr;
   }
@@ -328,75 +402,16 @@ body::before {
     height: 320px;
   }
 
+  .envelope-shell {
+    min-height: 34rem;
+  }
+
   .photo-image {
     aspect-ratio: 4 / 5;
   }
-}
-/* Elegant dark cursive for invitation text */
-.letter h1,
-.letter .names {
-  font-family: 'Great Vibes', cursive;
-  font-size: 3.4rem;
-  color: #1a1a1a;
-  letter-spacing: 0.02em;
-}
 
-.letter p,
-.letter .event,
-.letter .details,
-.letter .eyebrow {
-  font-family: "Inter", serif;
-  color: #2a2a2a;
-  font-weight: 400;
-}
-/* Seal fully disappears after opening */
-.envelope.open .seal {
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.6);
-  pointer-events: none;
-}
-/* Footer aesthetic to match invitation card */
-.page-footer {
-  text-align: center;
-  margin-top: 4rem;
-  padding: 2rem 1rem;
-  font-family: "Inter", serif;
-  font-size: 1.1rem;
-  color: #f3ece7;
-  opacity: 0.85;
-  letter-spacing: 0.04em;
-}
-
-.page-footer .signature {
-  font-family: 'Great Vibes', cursive;
-  font-size: 2.4rem;
-  color: #d4af37;
-  margin-top: 0.6rem;
-}
-/* Strong, readable, elegant text inside details panel */
-.details-grid h3 {
-  font-family: 'Great Vibes', cursive;
-  font-size: 2.6rem;
-  color: #1a1a1a;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.details-grid p {
-  font-family: "Inter", serif;
-  font-size: 1.2rem;
-  line-height: 1.85;
-  color: #222;              /* darker for readability */
-  text-align: center;
-  font-weight: 400;
-}
-@media (max-width: 640px) {
   .story-panel {
-    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
     padding: 1.5rem !important;
-  }
-
-  .story-panel > * {
-    width: 100% !important;
   }
 }
