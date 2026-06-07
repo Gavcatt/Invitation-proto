@@ -37,7 +37,6 @@ function handleLookup() {
   clearMessage(codeMessage);
   clearMessage(formMessage);
   
-  // Forces structural clean resets via style properties to avoid CSS class clashes
   formSection.style.setProperty('display', 'none', 'important');
   guestBlocksContainer.innerHTML = '';
 
@@ -73,16 +72,14 @@ function handleLookup() {
       guestDisplayName.textContent = data.displayName || 'Your party';
       maxGuestsText.textContent = currentMaxGuests;
 
-      // Triggers the direct HTML injector engine
       buildGuestBlocks(currentMaxGuests, data.prepopulatedNames || []);
       
-      // Forces the visibility overwrite cleanly
       formSection.style.setProperty('display', 'block', 'important');
       showMessage(codeMessage, '', null);
     })
     .catch(err => {
       console.error(err);
-      showMessage(codeMessage, 'Error contacting server. Ensure your script is deployed for "Anyone".', 'error');
+      showMessage(codeMessage, 'Error contacting server.', 'error');
     })
     .finally(() => {
       lookupBtn.disabled = false;
@@ -97,43 +94,59 @@ function buildGuestBlocks(maxGuests, prepopulatedNames = []) {
     const block = document.createElement('div');
     block.className = 'guest-block';
     block.style.margin = '1.5rem 0';
-    block.style.padding = '1rem';
+    block.style.padding = '1.2rem';
     block.style.border = '1px solid rgba(0,0,0,0.1)';
-    block.style.borderRadius = '8px';
+    block.style.borderRadius = '12px';
+    block.style.backgroundColor = 'rgba(255,255,255,0.5)';
 
     const defaultName = prepopulatedNames[i - 1] || '';
 
     block.innerHTML = `
-      <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-weight: 600;">
-        <div>Guest ${i}</div>
-        <div style="font-size: 0.8rem; font-weight: 400; opacity: 0.7;">Leave blank if not tracking</div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px dashed rgba(0,0,0,0.1);">
+        <div style="font-weight: 700; color: #1a1a1a;">Guest ${i}</div>
+        
+        <!-- ⚠️ NEW: Inclusion toggle checkbox to select who is submitting right now -->
+        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; color: #133916; font-weight: 600;">
+          <input type="checkbox" id="guest-submit-toggle-${i}" style="width: 16px; height: 16px; accent-color: #133916;" ${i === 1 ? 'checked' : ''} />
+          Respond for this guest
+        </label>
       </div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-        <div>
-          <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;" for="guest-name-${i}">Name</label>
-          <input type="text" id="guest-name-${i}" style="width:100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;" value="${defaultName}" />
+      
+      <div class="guest-fields-wrapper-${i}" style="transition: opacity 0.3s ease;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          <div>
+            <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-name-${i}">Name</label>
+            <input type="text" id="guest-name-${i}" style="width:100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff;" value="${defaultName}" />
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-attending-${i}">Attending</label>
+            <select id="guest-attending-${i}" style="width:100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff;">
+              <option value="yes">Yes, with pleasure</option>
+              <option value="no">No, regrettably</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-menu-${i}">Menu Preference</label>
+            <select id="guest-menu-${i}" style="width:100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff;">
+              ${MENU_OPTIONS.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+            </select>
+          </div>
         </div>
-        <div>
-          <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;" for="guest-attending-${i}">Attending</label>
-          <select id="guest-attending-${i}" style="width:100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
+        <div style="margin-top: 1rem;">
+          <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-dietary-${i}">Dietary Notes & Allergies</label>
+          <textarea id="guest-dietary-${i}" style="width:100%; height: 60px; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff; resize: vertical;" placeholder="Please note any allergies or specific requirements..."></textarea>
         </div>
-        <div>
-          <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;" for="guest-menu-${i}">Menu Preference</label>
-          <select id="guest-menu-${i}" style="width:100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
-            ${MENU_OPTIONS.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
-          </select>
-        </div>
-      </div>
-      <div style="margin-top: 1rem;">
-        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;" for="guest-dietary-${i}">Dietary Notes</label>
-        <textarea id="guest-dietary-${i}" style="width:100%; height: 60px; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;" placeholder="Allergies, intolerances, or other notes"></textarea>
       </div>
     `;
 
     guestBlocksContainer.appendChild(block);
+
+    // Simple visual helper: dim fields if the user unchecks "Respond for this guest"
+    const toggle = block.querySelector(`#guest-submit-toggle-${i}`);
+    const wrapper = block.querySelector(`.guest-fields-wrapper-${i}`);
+    toggle.addEventListener('change', () => {
+      wrapper.style.opacity = toggle.checked ? '1' : '0.35';
+    });
   }
 }
 
@@ -153,6 +166,10 @@ function handleSubmit(e) {
 
   const guests = [];
   for (let i = 1; i <= currentMaxGuests; i++) {
+    // ⚠️ LOOK HERE: Check if the checkbox toggle for this specific guest row is active
+    const isIncluded = document.getElementById(`guest-submit-toggle-${i}`).checked;
+    if (!isIncluded) continue; // Instantly skips this guest block row completely!
+
     const el = document.getElementById(`guest-name-${i}`);
     if (!el) continue;
     const nameVal = el.value.trim();
@@ -167,7 +184,7 @@ function handleSubmit(e) {
   }
 
   if (guests.length === 0) {
-    showMessage(formMessage, 'Please enter at least one guest name.', 'error');
+    showMessage(formMessage, 'Please select at least one guest checkbox to submit an RSVP.', 'error');
     submitBtn.disabled = false;
     submitBtn.textContent = originalText;
     return;
