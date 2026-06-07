@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2emF4Qozg-UByShIsUQGmZhZlSiReNepKhacLGGDL0k85_BVf9nhoTSbKb1lKFyTJ/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfGKOXeRzdSBpoef-y6kkt1m43bhpvH6RwGoGArE3xfutlrhhssaCAIMVzCwKITyP1/exec';
 
 const codeInput = document.getElementById('rsvp-code');
 const lookupBtn = document.getElementById('lookup-btn');
@@ -113,7 +113,6 @@ function buildGuestBlocks(maxGuests, prepopulatedNames = []) {
         </div>
         <div>
           <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-attending-${i}">Attending</label>
-          <!-- ⚠️ DEFAULT BLANK: Starts at a blank option, forcing a user change to count -->
           <select id="guest-attending-${i}" style="width:100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff;">
             <option value="">-- Select --</option>
             <option value="yes">Yes, with pleasure</option>
@@ -157,8 +156,6 @@ function handleSubmit(e) {
     if (!attendingEl) continue;
 
     const attendingValue = attendingEl.value;
-    
-    // ⚠️ LOOK HERE: If they didn't touch the dropdown and left it on "-- Select --", skip them completely!
     if (attendingValue === "") {
       continue; 
     }
@@ -168,6 +165,7 @@ function handleSubmit(e) {
     if (!nameVal) continue;
 
     guests.push({
+      originalIndex: i, // FIX: Sends row position number explicitly to track split profiles
       name: nameVal,
       attending: attendingValue === 'yes',
       menu: document.getElementById(`guest-menu-${i}`).value,
@@ -175,7 +173,6 @@ function handleSubmit(e) {
     });
   }
 
-  // Double check that at least one person in the party made an active choice
   if (guests.length === 0) {
     showMessage(formMessage, 'Please select the "Attending" status for at least one guest before submitting.', 'error');
     submitBtn.disabled = false;
