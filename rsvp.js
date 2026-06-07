@@ -36,7 +36,7 @@ rsvpForm.addEventListener('submit', handleSubmit);
 function handleLookup() {
   clearMessage(codeMessage);
   clearMessage(formMessage);
-  formSection.classList.add('hidden');
+  formSection.style.display = 'none';
   guestBlocksContainer.innerHTML = '';
 
   const code = codeInput.value.trim().toUpperCase();
@@ -70,7 +70,7 @@ function handleLookup() {
 
       // Passes the prepopulated names array from the database to the form builder
       buildGuestBlocks(currentMaxGuests, data.prepopulatedNames || []);
-      formSection.classList.remove('hidden');
+      formSection.style.display = 'block';
       showMessage(codeMessage, '', null);
     })
     .catch(err => {
@@ -179,7 +179,7 @@ function handleSubmit(e) {
       }
       showMessage(formMessage, 'Your RSVP has been successfully submitted!', 'success');
       rsvpForm.reset();
-      formSection.classList.add('hidden');
+      formSection.style.display = 'none';
     })
     .catch(err => {
       console.error(err);
