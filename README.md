@@ -1,20 +1,32 @@
-﻿# Wedding Photo Upload Landing Page
+# Gavin & Jessica | Digital Wedding Invitation
 
-A mobile-first wedding invitation page for guests to upload photos privately to Dropbox.
+This is a fresh wedding invitation project created in its own folder. It includes an animated envelope reveal, customizable guest greetings, a story section, and an RSVP data capture form.
 
-## What it includes
+## Included files
 
-- `index.html` — elegant landing page with upload CTA and QR code
-- `styles.css` — responsive, wedding-themed styling
-- `script.js` — Dropbox upload link and QR code generation
-- `rsvp.html` — RSVP page with photo upload instructions
+- `index.html` — animated digital invitation with personalized guest greeting
+- `rsvp.html` — RSVP form for attendance, guest count, dietary notes, and messages
+- `styles.css` — elegant and responsive typography, layout, and envelope animation
+- `script.js` — guest personalization, envelope animation, and RSVP local storage support
 
-## Setup
+## How to use
 
-1. Create a Dropbox File Request and copy the request URL.
-2. Replace the example URL in `script.js` with your Dropbox file request URL.
-3. Host this folder on a static site provider like GitHub Pages.
+1. Deploy the `wedding-invitation` folder to any static host (GitHub Pages, Netlify, Vercel, etc.).
+2. Share the invitation link with guests.
+3. Personalize the guest greeting by appending `?guest=First+Name`.
 
-## Deployment
+Example:
 
-Use GitHub Pages or any static site host. If using GitHub Pages, push the repo and enable Pages from the `main` branch and root folder.
+`https://your-domain.com/wedding-invitation/?guest=Emma`
+
+## RSVP configuration
+
+- The RSVP form uses a placeholder FormSubmit address: `https://formsubmit.co/your-email@example.com`.
+- Replace this with your own email endpoint or backend URL to receive RSVP submissions by email.
+- The form also stores responses locally in browser storage under `wedding-rsvps`.
+
+## Customization tips
+
+- Update the wedding venue, date, and time in `index.html`.
+- Replace sample photo placeholders with your own images or custom graphic cards.
+- Change the contact email in `rsvp.html` to your preferred RSVP destination.
