@@ -50,7 +50,9 @@ function handleLookup() {
 
   fetch(SCRIPT_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    mode: 'cors',
+    redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({ action: 'lookup', code })
   })
     .then(res => res.json())
@@ -130,4 +132,69 @@ function handleSubmit(e) {
     return;
   }
 
-  const guests
+  const submitBtn = rsvpForm.querySelector('button[type="submit"]') || { disabled: false, textContent: '' };
+  submitBtn.disabled = true;
+  const originalText = submitBtn.textContent;
+  submitBtn.textContent = 'Submitting...';
+
+  // Gather up the dynamic values from your guest input slots
+  const guests = [];
+  for (let i = 1; i <= currentMaxGuests; i++) {
+    const nameVal = document.getElementById(`guest-name-${i}`).value.trim();
+    if (!nameVal) continue; // Skips unfilled text records seamlessly
+
+    guests.push({
+      name: nameVal,
+      attending: document.getElementById(`guest-attending-${i}`).value === 'yes',
+      menu: document.getElementById(`guest-menu-${i}`).value,
+      dietary: document.getElementById(`guest-dietary-${i}`).value.trim()
+    });
+  }
+
+  if (guests.length === 0) {
+    showMessage(formMessage, 'Please enter at least one guest name.', 'error');
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+    return;
+  }
+
+  // Uses the fixed text/plain transport wrapper setup to cross Google's firewall
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'cors',
+    redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'submit', code: currentCode, guests })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        showMessage(formMessage, data.message || 'Submission error.', 'error');
+        return;
+      }
+      showMessage(formMessage, 'Your RSVP has been successfully submitted!', 'success');
+      rsvpForm.reset();
+      formSection.classList.add('hidden');
+    })
+    .catch(err => {
+      console.error(err);
+      showMessage(formMessage, 'Error submitting form data.', 'error');
+    })
+    .finally(() => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    });
+}
+
+// Global UI feedback display functions
+function showMessage(element, text, type) {
+  if (!element) return;
+  element.textContent = text;
+  element.className = type ? `message ${type}` : 'message';
+}
+
+function clearMessage(element) {
+  if (!element) return;
+  element.textContent = '';
+  element.className = 'message';
+}
