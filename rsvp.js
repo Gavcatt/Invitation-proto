@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_aOq0Gj33Jx2oncyuPlPxvQvEmZIlyXFbBvdtuh0jxLPcigCWI1UN4lzVGFxPiCn7/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxpEfWqECqKaxQVZAgci-jbGbAAc7p3_c-9WPN9hCUek93_j7OW0DXZsUZM7SHUNiEM/exec';
 
 const codeInput = document.getElementById('rsvp-code');
 const lookupBtn = document.getElementById('lookup-btn');
@@ -82,12 +82,15 @@ function handleLookup() {
     });
 }
 
-function buildGuestBlocks(maxGuests) {
+function buildGuestBlocks(maxGuests, prepopulatedNames = []) {
   guestBlocksContainer.innerHTML = '';
 
   for (let i = 1; i <= maxGuests; i++) {
     const block = document.createElement('div');
     block.className = 'guest-block';
+
+    // Extract the matching name from our incoming array index if it exists
+    const defaultName = prepopulatedNames[i - 1] || '';
 
     block.innerHTML = `
       <div class="guest-block-header">
@@ -97,7 +100,8 @@ function buildGuestBlocks(maxGuests) {
       <div class="guest-grid">
         <div>
           <label class="field-label" for="guest-name-${i}">Name</label>
-          <input type="text" id="guest-name-${i}" class="text-input" placeholder="Guest ${i} name" />
+          <!-- Value attribute handles injecting the extracted name array item natively -->
+          <input type="text" id="guest-name-${i}" class="text-input" placeholder="Guest ${i} name" value="${defaultName}" />
         </div>
         <div>
           <label class="field-label" for="guest-attending-${i}">Attending</label>
@@ -121,6 +125,8 @@ function buildGuestBlocks(maxGuests) {
 
     guestBlocksContainer.appendChild(block);
   }
+}
+
 }
 
 function handleSubmit(e) {
