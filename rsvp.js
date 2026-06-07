@@ -84,6 +84,7 @@ function handleLookup() {
 }
 
 function buildGuestBlocks(maxGuests, prepopulatedNames = []) {
+function buildGuestBlocks(maxGuests, prepopulatedNames = []) {
   guestBlocksContainer.innerHTML = '';
 
   for (let i = 1; i <= maxGuests; i++) {
@@ -125,6 +126,8 @@ function buildGuestBlocks(maxGuests, prepopulatedNames = []) {
 
     guestBlocksContainer.appendChild(block);
   }
+}
+
 }
 
 function handleSubmit(e) {
