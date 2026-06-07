@@ -102,51 +102,38 @@ function buildGuestBlocks(maxGuests, prepopulatedNames = []) {
     const defaultName = prepopulatedNames[i - 1] || '';
 
     block.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px dashed rgba(0,0,0,0.1);">
-        <div style="font-weight: 700; color: #1a1a1a;">Guest ${i}</div>
-        
-        <!-- ⚠️ NEW: Inclusion toggle checkbox to select who is submitting right now -->
-        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; color: #133916; font-weight: 600;">
-          <input type="checkbox" id="guest-submit-toggle-${i}" style="width: 16px; height: 16px; accent-color: #133916;" ${i === 1 ? 'checked' : ''} />
-          Respond for this guest
-        </label>
+      <div style="margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px dashed rgba(0,0,0,0.1); font-weight: 700; color: #1a1a1a;">
+        Guest ${i}
       </div>
       
-      <div class="guest-fields-wrapper-${i}" style="transition: opacity 0.3s ease;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-          <div>
-            <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-name-${i}">Name</label>
-            <input type="text" id="guest-name-${i}" style="width:100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff;" value="${defaultName}" />
-          </div>
-          <div>
-            <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-attending-${i}">Attending</label>
-            <select id="guest-attending-${i}" style="width:100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff;">
-              <option value="yes">Yes, with pleasure</option>
-              <option value="no">No, regrettably</option>
-            </select>
-          </div>
-          <div>
-            <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-menu-${i}">Menu Preference</label>
-            <select id="guest-menu-${i}" style="width:100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff;">
-              ${MENU_OPTIONS.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
-            </select>
-          </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <div>
+          <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-name-${i}">Name</label>
+          <input type="text" id="guest-name-${i}" style="width:100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff;" value="${defaultName}" />
         </div>
-        <div style="margin-top: 1rem;">
-          <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-dietary-${i}">Dietary Notes & Allergies</label>
-          <textarea id="guest-dietary-${i}" style="width:100%; height: 60px; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff; resize: vertical;" placeholder="Please note any allergies or specific requirements..."></textarea>
+        <div>
+          <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-attending-${i}">Attending</label>
+          <!-- ⚠️ DEFAULT BLANK: Starts at a blank option, forcing a user change to count -->
+          <select id="guest-attending-${i}" style="width:100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff;">
+            <option value="">-- Select --</option>
+            <option value="yes">Yes, with pleasure</option>
+            <option value="no">No, regrettably</option>
+          </select>
         </div>
+        <div>
+          <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-menu-${i}">Menu Preference</label>
+          <select id="guest-menu-${i}" style="width:100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff;">
+            ${MENU_OPTIONS.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div style="margin-top: 1rem;">
+        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-dietary-${i}">Dietary Notes & Allergies</label>
+        <textarea id="guest-dietary-${i}" style="width:100%; height: 60px; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff; resize: vertical;" placeholder="Please note any allergies or specific requirements..."></textarea>
       </div>
     `;
 
     guestBlocksContainer.appendChild(block);
-
-    // Simple visual helper: dim fields if the user unchecks "Respond for this guest"
-    const toggle = block.querySelector(`#guest-submit-toggle-${i}`);
-    const wrapper = block.querySelector(`.guest-fields-wrapper-${i}`);
-    toggle.addEventListener('change', () => {
-      wrapper.style.opacity = toggle.checked ? '1' : '0.35';
-    });
   }
 }
 
@@ -166,25 +153,31 @@ function handleSubmit(e) {
 
   const guests = [];
   for (let i = 1; i <= currentMaxGuests; i++) {
-    // ⚠️ LOOK HERE: Check if the checkbox toggle for this specific guest row is active
-    const isIncluded = document.getElementById(`guest-submit-toggle-${i}`).checked;
-    if (!isIncluded) continue; // Instantly skips this guest block row completely!
+    const attendingEl = document.getElementById(`guest-attending-${i}`);
+    if (!attendingEl) continue;
 
-    const el = document.getElementById(`guest-name-${i}`);
-    if (!el) continue;
-    const nameVal = el.value.trim();
+    const attendingValue = attendingEl.value;
+    
+    // ⚠️ LOOK HERE: If they didn't touch the dropdown and left it on "-- Select --", skip them completely!
+    if (attendingValue === "") {
+      continue; 
+    }
+
+    const nameEl = document.getElementById(`guest-name-${i}`);
+    const nameVal = nameEl ? nameEl.value.trim() : '';
     if (!nameVal) continue;
 
     guests.push({
       name: nameVal,
-      attending: document.getElementById(`guest-attending-${i}`).value === 'yes',
+      attending: attendingValue === 'yes',
       menu: document.getElementById(`guest-menu-${i}`).value,
       dietary: document.getElementById(`guest-dietary-${i}`).value.trim()
     });
   }
 
+  // Double check that at least one person in the party made an active choice
   if (guests.length === 0) {
-    showMessage(formMessage, 'Please select at least one guest checkbox to submit an RSVP.', 'error');
+    showMessage(formMessage, 'Please select the "Attending" status for at least one guest before submitting.', 'error');
     submitBtn.disabled = false;
     submitBtn.textContent = originalText;
     return;
