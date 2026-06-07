@@ -215,7 +215,9 @@ body::before {
   cursor: pointer;
   text-decoration: none;
 }
-
+.invitation-open #openButton {
+  display: none !important;
+}
 .tertiary-button {
   composes: secondary-button;
   border: none;
