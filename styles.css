@@ -380,6 +380,53 @@ body::before {
   color: #d4af37;
   margin-top: 0.6rem;
 }
+/* -------------------------------------------------------
+   POLISHED DETAILS GRID STYLING
+------------------------------------------------------- */
+/* Standardizes all paragraph text inside the card info blocks */
+.details-grid p {
+  font-family: "Inter", sans-serif;
+  font-size: 0.95rem !important;      /* Drops the bulky text size down to a sleek, modern layout */
+  line-height: 1.7 !important;        /* Adds clean leading for reading comfort */
+  color: #3a3a3a !important;          /* Elegant deep charcoal instead of harsh black */
+  text-align: left !important;        /* Left-aligns body text for a premium editorial feel */
+  margin-bottom: 1.2rem;
+}
+
+/* Polished styling for the highlighted hotel booking callout */
+.details-grid p.highlight-action {
+  font-weight: 600;
+  color: #133916 !important;          /* Ties back into your deep forest green envelope scheme */
+  border-top: 1px solid rgba(212, 175, 55, 0.25);
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+/* Premium alert panel styling for your transport notice */
+.details-grid .travel-warning {
+  background: rgba(143, 44, 75, 0.05); /* Soft premium burgundy tint */
+  border-left: 3px solid #8f2c4b;     /* Uses your button accent burgundy color */
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  margin-top: 1.5rem;
+}
+
+.details-grid .travel-warning strong {
+  font-family: "Inter", sans-serif;
+  display: block;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8f2c4b;                     /* Accent burgundy */
+  margin-bottom: 0.4rem;
+}
+
+/* Cleans up the warning paragraph inside the callout container */
+.details-grid .travel-warning p {
+  font-size: 0.9rem !important;
+  color: #4a4a4a !important;
+  margin-bottom: 0;
+}
 
 /* -------------------------------------------------------
    RESPONSIVE MEDIA QUERIES

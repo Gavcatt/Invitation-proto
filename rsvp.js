@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_aOq0Gj33Jx2oncyuPlPxvQvEmZIlyXFbBvdtuh0jxLPcigCWI1UN4lzVGFxPiCn7/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2emF4Qozg-UByShIsUQGmZhZlSiReNepKhacLGGDL0k85_BVf9nhoTSbKb1lKFyTJ/exec';
 
 const codeInput = document.getElementById('rsvp-code');
 const lookupBtn = document.getElementById('lookup-btn');
@@ -68,7 +68,8 @@ function handleLookup() {
       guestDisplayName.textContent = data.displayName || 'Your party';
       maxGuestsText.textContent = currentMaxGuests;
 
-      buildGuestBlocks(currentMaxGuests);
+      // Passes the prepopulated names array from the database to the form builder
+      buildGuestBlocks(currentMaxGuests, data.prepopulatedNames || []);
       formSection.classList.remove('hidden');
       showMessage(codeMessage, '', null);
     })
@@ -82,12 +83,15 @@ function handleLookup() {
     });
 }
 
-function buildGuestBlocks(maxGuests) {
+function buildGuestBlocks(maxGuests, prepopulatedNames = []) {
   guestBlocksContainer.innerHTML = '';
 
   for (let i = 1; i <= maxGuests; i++) {
     const block = document.createElement('div');
     block.className = 'guest-block';
+
+    // Grabs matching index name or falls back to an empty text input line natively
+    const defaultName = prepopulatedNames[i - 1] || '';
 
     block.innerHTML = `
       <div class="guest-block-header">
@@ -97,7 +101,7 @@ function buildGuestBlocks(maxGuests) {
       <div class="guest-grid">
         <div>
           <label class="field-label" for="guest-name-${i}">Name</label>
-          <input type="text" id="guest-name-${i}" class="text-input" placeholder="Guest ${i} name" />
+          <input type="text" id="guest-name-${i}" class="text-input" placeholder="Guest ${i} name" value="${defaultName}" />
         </div>
         <div>
           <label class="field-label" for="guest-attending-${i}">Attending</label>
@@ -137,11 +141,10 @@ function handleSubmit(e) {
   const originalText = submitBtn.textContent;
   submitBtn.textContent = 'Submitting...';
 
-  // Gather up the dynamic values from your guest input slots
   const guests = [];
   for (let i = 1; i <= currentMaxGuests; i++) {
     const nameVal = document.getElementById(`guest-name-${i}`).value.trim();
-    if (!nameVal) continue; // Skips unfilled text records seamlessly
+    if (!nameVal) continue; // Skips rendering records for empty input lines
 
     guests.push({
       name: nameVal,
@@ -158,7 +161,6 @@ function handleSubmit(e) {
     return;
   }
 
-  // Uses the fixed text/plain transport wrapper setup to cross Google's firewall
   fetch(SCRIPT_URL, {
     method: 'POST',
     mode: 'cors',
@@ -186,11 +188,16 @@ function handleSubmit(e) {
     });
 }
 
-// Global UI feedback display functions
 function showMessage(element, text, type) {
   if (!element) return;
   element.textContent = text;
   element.className = type ? `message ${type}` : 'message';
+}
+
+function clearIntervalMessage(element) {
+  if (!element) return;
+  element.textContent = '';
+  element.className = 'message';
 }
 
 function clearMessage(element) {
