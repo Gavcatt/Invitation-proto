@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-Ys0uX2Bx4fpqb9fl-_oND-r9QHtQFLrvbMk18I840WYBYm7Nd-hHIxyiOpIplf3O/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhIoQmmdarSQysREZx_KhaLKW-qw9U2Fj0JTI7vfVZvy-3k5A8lVHXkxGEJNChX2d0/exec';
 
 const codeInput = document.getElementById('rsvp-code');
 const lookupBtn = document.getElementById('lookup-btn');
