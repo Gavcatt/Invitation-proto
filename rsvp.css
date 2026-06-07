@@ -1,0 +1,232 @@
+:root {
+  --bg: #2f121b;
+  --card-bg: #ffffff;
+  --accent: #d4af37;
+  --accent-dark: #b08b24;
+  --text-main: #1f1f1f;
+  --text-muted: #666666;
+  --error: #b3261e;
+  --success: #1b7a3f;
+  --border-soft: #e5e5e5;
+  --radius-card: 18px;
+  --radius-field: 10px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #4a1a2a 0, var(--bg) 45%, #14060a 100%);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.rsvp-page {
+  width: 100%;
+  max-width: 960px;
+}
+
+.rsvp-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-card);
+  padding: 32px 28px 28px;
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+  border-top: 4px solid var(--accent);
+}
+
+.rsvp-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.rsvp-title {
+  font-family: "Great Vibes", cursive;
+  font-size: 40px;
+  margin: 0;
+  color: var(--bg);
+}
+
+.rsvp-subtitle {
+  margin: 8px 0 0;
+  font-size: 15px;
+  color: var(--text-muted);
+}
+
+.field-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--text-main);
+}
+
+.code-section {
+  margin-bottom: 24px;
+}
+
+.code-input-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.text-input,
+.select-input,
+.textarea-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--radius-field);
+  border: 1px solid var(--border-soft);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.text-input:focus,
+.select-input:focus,
+.textarea-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.3);
+}
+
+.textarea-input {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.primary-button {
+  background: var(--accent);
+  color: #1b1308;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+}
+
+.primary-button:hover {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.primary-button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.message {
+  font-size: 13px;
+  margin-top: 8px;
+  min-height: 18px;
+}
+
+.message.error {
+  color: var(--error);
+}
+
+.message.success {
+  color: var(--success);
+}
+
+.hidden {
+  display: none;
+}
+
+.form-section {
+  border-top: 1px solid var(--border-soft);
+  padding-top: 20px;
+}
+
+.form-header {
+  margin-bottom: 16px;
+}
+
+.guest-name {
+  font-size: 20px;
+  margin: 0 0 4px;
+  color: var(--bg);
+}
+
+.form-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.guest-block {
+  border-radius: 14px;
+  border: 1px solid var(--border-soft);
+  padding: 14px 14px 12px;
+  margin-bottom: 12px;
+  background: #faf7f4;
+}
+
+.guest-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.guest-block-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bg);
+}
+
+.guest-block-note {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.guest-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 14px;
+}
+
+.guest-grid-full {
+  grid-column: 1 / -1;
+}
+
+.form-actions {
+  margin-top: 16px;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .rsvp-card {
+    padding: 22px 18px 18px;
+  }
+
+  .guest-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .code-input-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .primary-button {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}
