@@ -36,7 +36,9 @@ rsvpForm.addEventListener('submit', handleSubmit);
 function handleLookup() {
   clearMessage(codeMessage);
   clearMessage(formMessage);
-  formSection.style.display = 'none';
+  
+  // Forces structural clean resets via style properties to avoid CSS class clashes
+  formSection.style.setProperty('display', 'none', 'important');
   guestBlocksContainer.innerHTML = '';
 
   const code = codeInput.value.trim().toUpperCase();
@@ -55,7 +57,10 @@ function handleLookup() {
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({ action: 'lookup', code })
   })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error('Network response failure');
+      return res.json();
+    })
     .then(data => {
       if (!data.success) {
         showMessage(codeMessage, data.message || 'Code not recognised.', 'error');
@@ -68,14 +73,16 @@ function handleLookup() {
       guestDisplayName.textContent = data.displayName || 'Your party';
       maxGuestsText.textContent = currentMaxGuests;
 
-      // Passes the prepopulated names array from the database to the form builder
+      // Triggers the direct HTML injector engine
       buildGuestBlocks(currentMaxGuests, data.prepopulatedNames || []);
-      formSection.style.display = 'block';
+      
+      // Forces the visibility overwrite cleanly
+      formSection.style.setProperty('display', 'block', 'important');
       showMessage(codeMessage, '', null);
     })
     .catch(err => {
       console.error(err);
-      showMessage(codeMessage, 'Error contacting server.', 'error');
+      showMessage(codeMessage, 'Error contacting server. Ensure your script is deployed for "Anyone".', 'error');
     })
     .finally(() => {
       lookupBtn.disabled = false;
@@ -84,50 +91,50 @@ function handleLookup() {
 }
 
 function buildGuestBlocks(maxGuests, prepopulatedNames = []) {
-function buildGuestBlocks(maxGuests, prepopulatedNames = []) {
   guestBlocksContainer.innerHTML = '';
 
   for (let i = 1; i <= maxGuests; i++) {
     const block = document.createElement('div');
     block.className = 'guest-block';
+    block.style.margin = '1.5rem 0';
+    block.style.padding = '1rem';
+    block.style.border = '1px solid rgba(0,0,0,0.1)';
+    block.style.borderRadius = '8px';
 
-    // Grabs matching index name or falls back to an empty text input line natively
     const defaultName = prepopulatedNames[i - 1] || '';
 
     block.innerHTML = `
-      <div class="guest-block-header">
-        <div class="guest-block-title">Guest ${i}</div>
-        <div class="guest-block-note">Leave blank if not used</div>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-weight: 600;">
+        <div>Guest ${i}</div>
+        <div style="font-size: 0.8rem; font-weight: 400; opacity: 0.7;">Leave blank if not tracking</div>
       </div>
-      <div class="guest-grid">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
         <div>
-          <label class="field-label" for="guest-name-${i}">Name</label>
-          <input type="text" id="guest-name-${i}" class="text-input" placeholder="Guest ${i} name" value="${defaultName}" />
+          <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;" for="guest-name-${i}">Name</label>
+          <input type="text" id="guest-name-${i}" style="width:100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;" value="${defaultName}" />
         </div>
         <div>
-          <label class="field-label" for="guest-attending-${i}">Attending</label>
-          <select id="guest-attending-${i}" class="select-input">
+          <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;" for="guest-attending-${i}">Attending</label>
+          <select id="guest-attending-${i}" style="width:100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
         </div>
         <div>
-          <label class="field-label" for="guest-menu-${i}">Menu preference</label>
-          <select id="guest-menu-${i}" class="select-input">
+          <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;" for="guest-menu-${i}">Menu Preference</label>
+          <select id="guest-menu-${i}" style="width:100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
             ${MENU_OPTIONS.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
           </select>
         </div>
-        <div class="guest-grid-full">
-          <label class="field-label" for="guest-dietary-${i}">Dietary notes</label>
-          <textarea id="guest-dietary-${i}" class="textarea-input" placeholder="Allergies, intolerances, or other notes"></textarea>
-        </div>
+      </div>
+      <div style="margin-top: 1rem;">
+        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem;" for="guest-dietary-${i}">Dietary Notes</label>
+        <textarea id="guest-dietary-${i}" style="width:100%; height: 60px; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;" placeholder="Allergies, intolerances, or other notes"></textarea>
       </div>
     `;
 
     guestBlocksContainer.appendChild(block);
   }
-}
-
 }
 
 function handleSubmit(e) {
@@ -146,8 +153,10 @@ function handleSubmit(e) {
 
   const guests = [];
   for (let i = 1; i <= currentMaxGuests; i++) {
-    const nameVal = document.getElementById(`guest-name-${i}`).value.trim();
-    if (!nameVal) continue; // Skips rendering records for empty input lines
+    const el = document.getElementById(`guest-name-${i}`);
+    if (!el) continue;
+    const nameVal = el.value.trim();
+    if (!nameVal) continue;
 
     guests.push({
       name: nameVal,
@@ -179,7 +188,7 @@ function handleSubmit(e) {
       }
       showMessage(formMessage, 'Your RSVP has been successfully submitted!', 'success');
       rsvpForm.reset();
-      formSection.style.display = 'none';
+      formSection.style.setProperty('display', 'none', 'important');
     })
     .catch(err => {
       console.error(err);
@@ -195,12 +204,7 @@ function showMessage(element, text, type) {
   if (!element) return;
   element.textContent = text;
   element.className = type ? `message ${type}` : 'message';
-}
-
-function clearIntervalMessage(element) {
-  if (!element) return;
-  element.textContent = '';
-  element.className = 'message';
+  element.style.color = type === 'error' ? '#8f2c4b' : '#133916';
 }
 
 function clearMessage(element) {
