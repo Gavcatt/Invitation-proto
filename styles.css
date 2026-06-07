@@ -907,3 +907,26 @@ body::before {
   object-fit: cover !important;
   border-radius: 20px !important;
 }
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .envelope,
+    .invitation,
+    .container {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    h1, h2, p {
+        text-align: center;
+        font-size: clamp(1rem, 4vw, 1.4rem);
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
