@@ -68,18 +68,23 @@ body::before {
 }
 
 /* -------------------------------------------------------
-   ENVELOPE SYSTEM
+   ENVELOPE SYSTEM — HIGH PERF 3D KINEMATICS
+------------------------------------------------------- */
+/* -------------------------------------------------------
+   ENVELOPE SYSTEM — INTEGRATED 3D POCKET & SPLIT SEAL
 ------------------------------------------------------- */
 .envelope-shell {
   display: flex;
   justify-content: center;
-  perspective: 1400px;
+  perspective: 2000px; /* Enhanced 3D depth field */
   margin-bottom: 2rem;
   position: relative;
   min-height: 48rem;
   width: 100%;
   height: 480px; 
+  transition: height 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
 .invitation-open .envelope-shell {
   height: 280px; 
 }
@@ -89,10 +94,12 @@ body::before {
   width: 480px;
   height: 480px;
   transform-style: preserve-3d;
-  transition: transform 1s cubic-bezier(0.22, 1.0, 0.36, 1.0)
+  transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); 
+  transform: rotateX(10deg); /* Slight forward tilt for depth */
 }
+
 .invitation-open .envelope {
-  transform: translateY(180px); 
+  transform: translateY(180px) rotateX(0deg); 
 }
 
 .envelope-body {
@@ -102,21 +109,38 @@ body::before {
   border: 3px solid #d4af37;
   border-radius: 26px;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
-  z-index: 1;
+  z-index: 1; /* Lowest base layer pouch */
 }
 
+/* Front Flap: Restructured with color depth contrast and high definition shadows */
 .envelope-flap {
   position: absolute;
   top: 0;
+  left: 0;
   width: 100%;
-  height: 40%;
-  background: #133916;
-  clip-path: polygon(50% 100%, 0 0, 100% 0);
-  border: none;
+  height: 50%; /* Extended to meet the exact centerline of the seal */
+  
+  /* FIXED CONTRAST: Uses a slightly lighter gradient shade at the top to break away from the dark body */
+  background: linear-gradient(180deg, #1b4d1f 0%, #133916 100%);
+  
+  clip-path: polygon(0 0, 100% 0, 50% 100%); /* Perfect envelope triangle geometry */
   transform-origin: top center;
-  z-index: 4;
+  
+  /* LAYER SAFETY: Sits over body and letter, but under the seal */
+  z-index: 3; 
+  
+  /* Smooth physics hinge transition timing curve */
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.2s, 
+              z-index 0.1s linear 0.5s,
+              box-shadow 0.5s ease;
+  transform-style: preserve-3d;
+  
+  /* 🌟 DEFINITION FIX: Injects a deep multi-layered crisp drop shadow below the triangle tip */
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 
+              0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
+/* Forces the gold border to draw along the precise triangle diagonal edges cleanly */
 .envelope-flap::before {
   content: "";
   position: absolute;
@@ -125,64 +149,129 @@ body::before {
   border: 3px solid #d4af37;
   border-radius: 26px;
   pointer-events: none;
-  z-index: 5;
 }
 
+/* The Animated Open State: Flips cleanly upside down backward and kills shadow */
+.envelope.open .envelope-flap {
+  transform: rotateX(-180deg);
+  z-index: 0; /* Drops behind the back layer smoothly so the letter can exit */
+  box-shadow: 0 0 0 rgba(0,0,0,0); /* Removes shadow when flat open */
+}
+
+
+/* 🌟 KEEPING YOUR PERFECT SPLITTING WAX SEAL CONFIGURATION SAFE HERE 🌟 */
 .seal {
   position: absolute;
   left: 50%;
   top: 40%;
   transform: translate(-50%, -50%);
-  width: 76px;
-  height: 76px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #0b2b13, #072312 45%, #041809 100%);
-  border: 3px solid #d4af37;
-  z-index: 6;
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  width: 80px;
+  height: 80px;
+  z-index: 6; /* Sitting proudly on top of the front flap */
+  pointer-events: none;
 }
 
-.seal::before {
+.seal-half {
+  position: absolute;
+  top: 0;
+  width: 40px;
+  height: 80px;
+  background: radial-gradient(circle at center, #0b2b13, #072312 45%, #041809 100%);
+  border: 3px solid #d4af37;
+  overflow: hidden;
+  transition: transform 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97), opacity 0.4s ease 0.2s;
+}
+
+.seal-half::before {
   content: "G&J";
   position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80px;
   font-family: 'Great Vibes', cursive;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: rgba(255, 255, 255, 0.9);
+  text-align: center;
 }
 
+.seal-half.left {
+  left: 0;
+  border-radius: 40px 0 0 40px;
+  border-right: none;
+}
+.seal-half.left::before {
+  left: 0;
+}
+
+.seal-half.right {
+  right: 0;
+  border-radius: 0 40px 40px 0;
+  border-left: none;
+}
+.seal-half.right::before {
+  right: 0;
+}
+
+.envelope.open .seal-half.left {
+  transform: translateX(-45px) rotate(-20deg);
+  opacity: 0;
+}
+
+.envelope.open .seal-half.right {
+  transform: translateX(45px) rotate(20deg);
+  opacity: 0;
+}
+
+/* Ensure your letter remains tucked safely deep inside until opened */
 .letter {
   position: absolute;
   top: 20%;
   left: 50%;
-  transform: translate(-50%, 40px);
+  transform: translate(-50%, 40px) scale(0.95);
   width: 92%;
   min-height: 65%;
   background: #ffffff;
   padding: 4rem 3.4rem;
   border-radius: 28px;
-  box-shadow: 0 34px 70px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   opacity: 0;
-  z-index: 2;
-  transition: transform 1s cubic-bezier(0.22, 1.0, 0.36, 1.0), opacity 0.9s ease;
+  z-index: 2; /* Sandwiched safely between the back body and front triangle flap */
+  transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s, opacity 0.6s ease 0.6s;
 }
 
 .envelope.open .letter {
   opacity: 1;
-  transform: translate(-50%, -140px);
+  transform: translate(-50%, -140px) scale(1);
 }
 
-.envelope.open .envelope-flap {
-  transform: rotateX(-150deg);
-  z-index: 0;
-}
 
-.envelope.open .seal {
+/* -------------------------------------------------------
+   THE LETTER REVEAL FRAMEWORK
+------------------------------------------------------- */
+.letter {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, 40px) scale(0.95);
+  width: 92%;
+  min-height: 65%;
+  background: #ffffff;
+  padding: 4rem 3.4rem;
+  border-radius: 28px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.6);
-  pointer-events: none;
+  z-index: 2;
+  /* Staggered delay loop forces the letter to wait until the flap is fully clear */
+  transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.7s, 
+              opacity 0.6s ease 0.7s,
+              box-shadow 0.8s ease 0.7s;
+}
+
+/* Slides high up clear over the flipped green background flap */
+.envelope.open .letter {
+  opacity: 1;
+  transform: translate(-50%, -140px) scale(1);
+  box-shadow: 0 35px 70px rgba(0, 0, 0, 0.25);
 }
 
 /* -------------------------------------------------------
@@ -197,7 +286,7 @@ body::before {
   gap: 1rem;
   flex-wrap: wrap;
   z-index: 4;
-  transition: top 1s cubic-bezier(0.22, 1.0, 0.36, 1.0), opacity 0.8s ease;
+  transition: top 1s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease;
 }
 
 .invitation-open .button-row {
@@ -214,12 +303,20 @@ body::before {
   font-weight: 700;
   cursor: pointer;
   text-decoration: none;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+.secondary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
 .invitation-open #openButton {
   display: none !important;
 }
+
 .tertiary-button {
-  composes: secondary-button;
   border: none;
   padding: 1rem 1.8rem;
   border-radius: 999px;
@@ -229,13 +326,20 @@ body::before {
   font-weight: 700;
   cursor: pointer;
   text-decoration: none;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tertiary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
 
 /* -------------------------------------------------------
-   DETAILS PANEL & STORY (FIXED TO RE-CENTER CONTENT)
+   DETAILS PANEL & STORY
 ------------------------------------------------------- */
 .details-panel {
-  position: relative; /* Fixed: Changed from absolute positioning */
+  position: relative;
   width: 100%;
   margin-top: 2rem;
   opacity: 0;
@@ -245,7 +349,7 @@ body::before {
   padding: 3rem 2.4rem;
   box-shadow: 0 34px 70px rgba(0, 0, 0, 0.18);
   border: 1px solid rgba(212, 175, 55, 0.28);
-  transition: opacity 1s ease, visibility 1s ease, transform 1s cubic-bezier(0.22, 1.0, 0.36, 1.0);
+  transition: opacity 1s ease, visibility 1s ease, transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   transform: translateY(40px) scale(0.98);
 }
 
@@ -303,7 +407,7 @@ body::before {
 }
 
 .photo-card figcaption {
-  display: none; /* Hides captions if you only want clean image blocks */
+  display: none;
 }
 
 /* -------------------------------------------------------
@@ -368,99 +472,3 @@ body::before {
   padding: 2rem 1rem;
   font-family: "Inter", serif;
   font-size: 1.1rem;
-  color: #f3ece7;
-  opacity: 0.85;
-  letter-spacing: 0.04em;
-  width: 100%;
-}
-
-.page-footer .signature {
-  font-family: 'Great Vibes', cursive;
-  font-size: 2.4rem;
-  color: #d4af37;
-  margin-top: 0.6rem;
-}
-/* -------------------------------------------------------
-   POLISHED DETAILS GRID STYLING
-------------------------------------------------------- */
-/* Standardizes all paragraph text inside the card info blocks */
-.details-grid p {
-  font-family: "Inter", sans-serif;
-  font-size: 0.95rem !important;      /* Drops the bulky text size down to a sleek, modern layout */
-  line-height: 1.7 !important;        /* Adds clean leading for reading comfort */
-  color: #3a3a3a !important;          /* Elegant deep charcoal instead of harsh black */
-  text-align: left !important;        /* Left-aligns body text for a premium editorial feel */
-  margin-bottom: 1.2rem;
-}
-
-/* Polished styling for the highlighted hotel booking callout */
-.details-grid p.highlight-action {
-  font-weight: 600;
-  color: #133916 !important;          /* Ties back into your deep forest green envelope scheme */
-  border-top: 1px solid rgba(212, 175, 55, 0.25);
-  padding-top: 1rem;
-  margin-top: 1rem;
-}
-
-/* Premium alert panel styling for your transport notice */
-.details-grid .travel-warning {
-  background: rgba(143, 44, 75, 0.05); /* Soft premium burgundy tint */
-  border-left: 3px solid #8f2c4b;     /* Uses your button accent burgundy color */
-  padding: 1rem 1.2rem;
-  border-radius: 12px;
-  margin-top: 1.5rem;
-}
-
-.details-grid .travel-warning strong {
-  font-family: "Inter", sans-serif;
-  display: block;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #8f2c4b;                     /* Accent burgundy */
-  margin-bottom: 0.4rem;
-}
-
-/* Cleans up the warning paragraph inside the callout container */
-.details-grid .travel-warning p {
-  font-size: 0.9rem !important;
-  color: #4a4a4a !important;
-  margin-bottom: 0;
-}
-
-/* -------------------------------------------------------
-   RESPONSIVE MEDIA QUERIES
-------------------------------------------------------- */
-@media (max-width: 900px) {
-  .details-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 640px) {
-  .card {
-    border-radius: 24px;
-  }
-
-  .card > * {
-    padding: 1.5rem;
-  }
-
-  .envelope {
-    width: 320px;
-    height: 320px;
-  }
-
-  .envelope-shell {
-    min-height: 34rem;
-  }
-
-  .photo-image {
-    aspect-ratio: 4 / 5;
-  }
-
-  .story-panel {
-    flex-direction: column !important;
-    padding: 1.5rem !important;
-  }
-}

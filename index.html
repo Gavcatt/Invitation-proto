@@ -21,8 +21,21 @@
         <div class="envelope-shell">
           <div class="envelope" id="envelope">
             <div class="envelope-body"></div>
-            <div class="envelope-flap"></div>
-            <div class="seal"></div>
+            <!-- Replace your old envelope-flap element with this modern curved SVG version -->
+<div class="envelope-flap">
+  <svg viewBox="0 0 480 240" preserveAspectRatio="none">
+    <!-- Main Green Flap Geometry Slices -->
+    <path d="M 0 0 L 480 0 L 240 240 Z" fill="#1b4d1f" />
+    <!-- Polished Gold Trim Path Tracking Along the Precise Angle Creases -->
+    <path d="M 3 0 L 477 0 L 240 237 Z" fill="none" stroke="#d4af37" stroke-width="3" />
+  </svg>
+</div>
+
+            <div class="seal" id="waxSeal">
+  <div class="seal-half left"></div>
+  <div class="seal-half right"></div>
+</div>
+
             <div class="letter">
               <p class="eyebrow">A personal invitation</p>
               <h1>Gavin & Jessica</h1>
