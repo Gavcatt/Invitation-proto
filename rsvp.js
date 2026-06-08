@@ -16,7 +16,7 @@ const MENU_OPTIONS = [
   'Beef',
   'Vegetarian',
   'Vegan',
-  'Child’s Meal',
+  'Child\'s Meal',
   'Other'
 ];
 
@@ -72,7 +72,7 @@ function handleLookup() {
       guestDisplayName.textContent = data.displayName || 'Your party';
       maxGuestsText.textContent = currentMaxGuests;
 
-      buildGuestBlocks(currentMaxGuests, data.prepopulatedNames || []);
+      buildGuestBlocks(currentMaxGuests, data.prepopulatedNames || [], data.originalIndexes || []);
       
       formSection.style.setProperty('display', 'block', 'important');
       showMessage(codeMessage, '', null);
@@ -87,48 +87,45 @@ function handleLookup() {
     });
 }
 
-function buildGuestBlocks(maxGuests, prepopulatedNames = []) {
+function buildGuestBlocks(maxGuests, prepopulatedNames = [], originalIndexes = []) {
   guestBlocksContainer.innerHTML = '';
 
   for (let i = 1; i <= maxGuests; i++) {
     const block = document.createElement('div');
     block.className = 'guest-block';
-    block.style.margin = '1.5rem 0';
-    block.style.padding = '1.2rem';
-    block.style.border = '1px solid rgba(0,0,0,0.1)';
-    block.style.borderRadius = '12px';
-    block.style.backgroundColor = 'rgba(255,255,255,0.5)';
 
     const defaultName = prepopulatedNames[i - 1] || '';
+    const trueSeatIndex = originalIndexes[i - 1] || i;
 
     block.innerHTML = `
-      <div style="margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px dashed rgba(0,0,0,0.1); font-weight: 700; color: #1a1a1a;">
-        Guest ${i}
+      <div class="guest-block-header">
+        Guest ${trueSeatIndex}
       </div>
       
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+      <div class="guest-grid">
         <div>
-          <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-name-${i}">Name</label>
-          <input type="text" id="guest-name-${i}" style="width:100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff;" value="${defaultName}" />
+          <label class="field-label" for="guest-name-${i}">Name</label>
+          <input type="hidden" id="guest-seat-marker-${i}" value="${trueSeatIndex}" />
+          <input type="text" id="guest-name-${i}" class="text-input" placeholder="Full Name" value="${defaultName}" />
         </div>
         <div>
-          <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-attending-${i}">Attending</label>
-          <select id="guest-attending-${i}" style="width:100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff;">
+          <label class="field-label" for="guest-attending-${i}">Attending</label>
+          <select id="guest-attending-${i}" class="select-input">
             <option value="">-- Select --</option>
             <option value="yes">Yes, with pleasure</option>
             <option value="no">No, regrettably</option>
           </select>
         </div>
         <div>
-          <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-menu-${i}">Menu Preference</label>
-          <select id="guest-menu-${i}" style="width:100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff;">
+          <label class="field-label" for="guest-menu-${i}">Menu Preference</label>
+          <select id="guest-menu-${i}" class="select-input">
             ${MENU_OPTIONS.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
           </select>
         </div>
       </div>
-      <div style="margin-top: 1rem;">
-        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.3rem; color:#4a4a4a;" for="guest-dietary-${i}">Dietary Notes & Allergies</label>
-        <textarea id="guest-dietary-${i}" style="width:100%; height: 60px; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; background-color: #fff; resize: vertical;" placeholder="Please note any allergies or specific requirements..."></textarea>
+      <div style="margin-top: 1.2rem;">
+        <label class="field-label" for="guest-dietary-${i}">Dietary Notes & Allergies</label>
+        <textarea id="guest-dietary-${i}" class="textarea-input" placeholder="Please note any allergies or specific dietary requirements..."></textarea>
       </div>
     `;
 
@@ -164,8 +161,11 @@ function handleSubmit(e) {
     const nameVal = nameEl ? nameEl.value.trim() : '';
     if (!nameVal) continue;
 
+    const seatMarkerEl = document.getElementById(`guest-seat-marker-${i}`);
+    const absoluteSeatIndex = seatMarkerEl ? Number(seatMarkerEl.value) : i;
+
     guests.push({
-      originalIndex: i, // FIX: Sends row position number explicitly to track split profiles
+      originalIndex: absoluteSeatIndex, 
       name: nameVal,
       attending: attendingValue === 'yes',
       menu: document.getElementById(`guest-menu-${i}`).value,
@@ -193,9 +193,12 @@ function handleSubmit(e) {
         showMessage(formMessage, data.message || 'Submission error.', 'error');
         return;
       }
-      showMessage(formMessage, 'Your RSVP has been successfully submitted!', 'success');
-      rsvpForm.reset();
+
+      document.querySelector('.rsvp-header').style.setProperty('display', 'none', 'important');
       formSection.style.setProperty('display', 'none', 'important');
+      rsvpForm.reset();
+      const successSection = document.getElementById('success-section');
+      successSection.style.setProperty('display', 'block', 'important');
     })
     .catch(err => {
       console.error(err);
@@ -211,7 +214,12 @@ function showMessage(element, text, type) {
   if (!element) return;
   element.textContent = text;
   element.className = type ? `message ${type}` : 'message';
-  element.style.color = type === 'error' ? '#8f2c4b' : '#133916';
+  
+  if (type === 'error') {
+    element.style.setProperty('color', '#8f2c4b', 'important');
+  } else if (type === 'success') {
+    element.style.setProperty('color', '#133916', 'important');
+  }
 }
 
 function clearMessage(element) {

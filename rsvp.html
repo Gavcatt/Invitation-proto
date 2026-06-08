@@ -2,51 +2,72 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>RSVP</title>
+  <title>Gavin & Jessica | Wedding RSVP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#2f121b" />
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <!-- FIXED FONT CONNECTIONS: Domain targets fully restored -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="rsvp.css" />
 </head>
 <body>
+
   <main class="rsvp-page">
     <div class="rsvp-card">
+      
+      <!-- Luxury Editorial Header Banner -->
       <header class="rsvp-header">
         <h1 class="rsvp-title">RSVP</h1>
-        <p class="rsvp-subtitle">Please enter your unique RSVP code to begin.</p>
+        <p class="rsvp-subtitle">Please enter your unique invitation code below to respond.</p>
       </header>
 
+      <!-- Code Lookup Input Section -->
       <section id="code-section" class="code-section">
-        <label for="rsvp-code" class="field-label">RSVP Code</label>
+        <label for="rsvp-code" class="field-label">Invitation Code</label>
         <div class="code-input-row">
-          <input type="text" id="rsvp-code" class="text-input" placeholder="Enter your code" />
+          <input type="text" id="rsvp-code" class="text-input" placeholder="e.g. GAVJESS2027" autocomplete="off" />
           <button id="lookup-btn" class="primary-button">Continue</button>
         </div>
         <p id="code-message" class="message"></p>
       </section>
 
-      <section id="form-section" class="form-section" style="display: none;">
+      <!-- Response Panel Grid Forms Section -->
+      <section id="form-section" class="form-section" style="display: none !important;">
         <div class="form-header">
           <h2 id="guest-display-name" class="guest-name"></h2>
-          <p class="form-subtitle">You can RSVP for up to <span id="max-guests-text"></span> guest(s) with this code.</p>
+          <p class="form-subtitle">You can RSVP for up to <span id="max-guests-text"></span> guest(s) with this invitation.</p>
         </div>
 
         <form id="rsvp-form">
+          <!-- Dynamic guest entry boxes will inject cleanly inside this wrapper slot -->
           <div id="guest-blocks"></div>
 
           <div class="form-actions">
-            <button type="submit" class="primary-button">Submit RSVP</button>
+            <button type="submit" class="primary-button submit-action-btn">Submit RSVP</button>
           </div>
           <p id="form-message" class="message"></p>
         </form>
       </section>
-    </div>
+ <!-- 🌟 NEW CUSTOM SUCCESS WINDOW (Initially Hidden) -->
+      <section id="success-section" class="success-section" style="display: none !important;">
+        <div class="success-content">
+          <div class="success-icon">G&J</div>
+          <h2 class="success-heading">Thank You</h2>
+          <p class="success-message">Your RSVP details have been successfully received and saved.</p>
+          <p class="success-submessage">We absolutely can't wait to celebrate our special day with you at Lartington Hall!</p>
+          <div class="success-actions">
+            <!-- Dynamically links directly back to your main animated envelope landing page index -->
+            <a href="index.html" class="primary-button return-home-btn">Return to Invitation</a>
+          </div>
+        </div>
+      </section>
+
+    </div> <!-- Closes rsvp-card wrapper -->
   </main>
 
   <script src="rsvp.js"></script>
 </body>
 </html>
-
