@@ -27,14 +27,14 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
   background-size: 48px 48px;
   opacity: 0.18;
   pointer-events: none;
 }
 
 /* -------------------------------------------------------
-   LAYOUT WRAPPERS (CENTERS CONTENT PERFECTLY)
+   LAYOUT WRAPPERS
 ------------------------------------------------------- */
 .page-shell {
   display: flex;
@@ -63,30 +63,50 @@ body::before {
 .hero-panel {
   text-align: center;
   position: relative;
-  padding-bottom: 6rem;
+  padding-bottom: 3rem;
   width: 100%;
 }
 
 /* -------------------------------------------------------
-   ENVELOPE SYSTEM — HIGH PERF 3D KINEMATICS
+   TAP HINT
 ------------------------------------------------------- */
+.tap-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #8f2c4b;
+  margin: 0 0 1rem;
+  opacity: 0.8;
+  transition: opacity 0.4s ease;
+}
+
 /* -------------------------------------------------------
-   ENVELOPE SYSTEM — INTEGRATED 3D POCKET & SPLIT SEAL
+   ENVELOPE SYSTEM
 ------------------------------------------------------- */
 .envelope-shell {
   display: flex;
   justify-content: center;
-  perspective: 2000px; /* Enhanced 3D depth field */
-  margin-bottom: 2rem;
+  perspective: 2000px;
+  margin-bottom: 1rem;
   position: relative;
-  min-height: 48rem;
   width: 100%;
-  height: 480px; 
+  height: 480px;
   transition: height 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+.clickable-envelope {
+  cursor: pointer;
+}
+
+.clickable-envelope:hover .seal {
+  transform: translate(-50%, -50%) scale(1.06);
+  transition: transform 0.3s ease;
+}
+
 .invitation-open .envelope-shell {
-  height: 280px; 
+  height: 320px;
 }
 
 .envelope {
@@ -94,81 +114,65 @@ body::before {
   width: 480px;
   height: 480px;
   transform-style: preserve-3d;
-  transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); 
-  transform: rotateX(10deg); /* Slight forward tilt for depth */
+  transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: rotateX(10deg);
 }
 
 .invitation-open .envelope {
-  transform: translateY(180px) rotateX(0deg); 
+  transform: translateY(160px) rotateX(0deg);
 }
 
+/* Envelope body (the green pocket) */
 .envelope-body {
   position: absolute;
   inset: 0;
   background: #133916;
   border: 3px solid #d4af37;
   border-radius: 26px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
-  z-index: 1; /* Lowest base layer pouch */
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+  z-index: 1;
 }
 
-/* Front Flap: Restructured with color depth contrast and high definition shadows */
+/* SVG flap — triangular green lid */
 .envelope-flap {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 50%; /* Extended to meet the exact centerline of the seal */
-  
-  /* FIXED CONTRAST: Uses a slightly lighter gradient shade at the top to break away from the dark body */
-  background: linear-gradient(180deg, #1b4d1f 0%, #133916 100%);
-  
-  clip-path: polygon(0 0, 100% 0, 50% 100%); /* Perfect envelope triangle geometry */
+  height: 50%;
+  z-index: 3;
   transform-origin: top center;
-  
-  /* LAYER SAFETY: Sits over body and letter, but under the seal */
-  z-index: 3; 
-  
-  /* Smooth physics hinge transition timing curve */
-  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.2s, 
-              z-index 0.1s linear 0.5s,
-              box-shadow 0.5s ease;
   transform-style: preserve-3d;
-  
-  /* 🌟 DEFINITION FIX: Injects a deep multi-layered crisp drop shadow below the triangle tip */
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 
-              0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.9s cubic-bezier(0.25, 1, 0.5, 1) 0.15s,
+              z-index 0s linear 0.55s;
+  overflow: hidden;
 }
 
-/* Forces the gold border to draw along the precise triangle diagonal edges cleanly */
-.envelope-flap::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  clip-path: inherit;
-  border: 3px solid #d4af37;
-  border-radius: 26px;
-  pointer-events: none;
+.envelope-flap svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
-/* The Animated Open State: Flips cleanly upside down backward and kills shadow */
+/* Flip the flap back over the top of the envelope */
 .envelope.open .envelope-flap {
   transform: rotateX(-180deg);
-  z-index: 0; /* Drops behind the back layer smoothly so the letter can exit */
-  box-shadow: 0 0 0 rgba(0,0,0,0); /* Removes shadow when flat open */
+  z-index: 0;
 }
 
-
-/* 🌟 KEEPING YOUR PERFECT SPLITTING WAX SEAL CONFIGURATION SAFE HERE 🌟 */
+/* -------------------------------------------------------
+   WAX SEAL — SPLITS APART ON OPEN
+------------------------------------------------------- */
 .seal {
   position: absolute;
   left: 50%;
-  top: 40%;
+  top: 42%;
   transform: translate(-50%, -50%);
   width: 80px;
   height: 80px;
-  z-index: 6; /* Sitting proudly on top of the front flap */
+  z-index: 6;
   pointer-events: none;
+  transition: transform 0.3s ease;
 }
 
 .seal-half {
@@ -179,7 +183,8 @@ body::before {
   background: radial-gradient(circle at center, #0b2b13, #072312 45%, #041809 100%);
   border: 3px solid #d4af37;
   overflow: hidden;
-  transition: transform 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97), opacity 0.4s ease 0.2s;
+  transition: transform 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) 0.1s,
+              opacity 0.4s ease 0.25s;
 }
 
 .seal-half::before {
@@ -190,7 +195,7 @@ body::before {
   width: 80px;
   font-family: 'Great Vibes', cursive;
   font-size: 1.6rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255,255,255,0.9);
   text-align: center;
 }
 
@@ -199,54 +204,26 @@ body::before {
   border-radius: 40px 0 0 40px;
   border-right: none;
 }
-.seal-half.left::before {
-  left: 0;
-}
+.seal-half.left::before { left: 0; }
 
 .seal-half.right {
   right: 0;
   border-radius: 0 40px 40px 0;
   border-left: none;
 }
-.seal-half.right::before {
-  right: 0;
-}
+.seal-half.right::before { right: 0; }
 
 .envelope.open .seal-half.left {
   transform: translateX(-45px) rotate(-20deg);
   opacity: 0;
 }
-
 .envelope.open .seal-half.right {
   transform: translateX(45px) rotate(20deg);
   opacity: 0;
 }
 
-/* Ensure your letter remains tucked safely deep inside until opened */
-.letter {
-  position: absolute;
-  top: 20%;
-  left: 50%;
-  transform: translate(-50%, 40px) scale(0.95);
-  width: 92%;
-  min-height: 65%;
-  background: #ffffff;
-  padding: 4rem 3.4rem;
-  border-radius: 28px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  opacity: 0;
-  z-index: 2; /* Sandwiched safely between the back body and front triangle flap */
-  transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s, opacity 0.6s ease 0.6s;
-}
-
-.envelope.open .letter {
-  opacity: 1;
-  transform: translate(-50%, -140px) scale(1);
-}
-
-
 /* -------------------------------------------------------
-   THE LETTER REVEAL FRAMEWORK
+   LETTER (slides up out of the envelope)
 ------------------------------------------------------- */
 .letter {
   position: absolute;
@@ -256,311 +233,38 @@ body::before {
   width: 92%;
   min-height: 65%;
   background: #ffffff;
-  padding: 4rem 3.4rem;
+  padding: 3rem 2.5rem;
   border-radius: 28px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   opacity: 0;
   z-index: 2;
-  /* Staggered delay loop forces the letter to wait until the flap is fully clear */
-  transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.7s, 
-              opacity 0.6s ease 0.7s,
-              box-shadow 0.8s ease 0.7s;
+  transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.65s,
+              opacity 0.6s ease 0.65s,
+              box-shadow 0.8s ease 0.65s;
 }
 
-/* Slides high up clear over the flipped green background flap */
 .envelope.open .letter {
   opacity: 1;
   transform: translate(-50%, -140px) scale(1);
-  box-shadow: 0 35px 70px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 35px 70px rgba(0,0,0,0.25);
 }
 
 /* -------------------------------------------------------
-   BUTTONS
-------------------------------------------------------- */
-.button-row {
-  position: relative;
-  left: 50%;
-  top: 58%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  z-index: 4;
-  transition: top 1s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease;
-}
-
-.invitation-open .button-row {
-  top: 98%;
-  opacity: 0.95;
-}
-
-.secondary-button {
-  border: none;
-  padding: 1rem 1.8rem;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #8f2c4b, #4c5e39);
-  color: #fff;
-  font-weight: 700;
-  cursor: pointer;
-  text-decoration: none;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.secondary-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-.invitation-open #openButton {
-  display: none !important;
-}
-
-.tertiary-button {
-  border: none;
-  padding: 1rem 1.8rem;
-  border-radius: 999px;
-  background: #133916;
-  border: 1px solid #d4af37;
-  color: #fff;
-  font-weight: 700;
-  cursor: pointer;
-  text-decoration: none;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.tertiary-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-/* -------------------------------------------------------
-   DETAILS PANEL & STORY
-------------------------------------------------------- */
-.details-panel {
-  position: relative;
-  width: 100%;
-  margin-top: 2rem;
-  opacity: 0;
-  visibility: hidden;
-  background: linear-gradient(135deg, rgba(19, 57, 22, 0.92), rgba(255, 255, 255, 0.96) 70%);
-  border-radius: 32px;
-  padding: 3rem 2.4rem;
-  box-shadow: 0 34px 70px rgba(0, 0, 0, 0.18);
-  border: 1px solid rgba(212, 175, 55, 0.28);
-  transition: opacity 1s ease, visibility 1s ease, transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transform: translateY(40px) scale(0.98);
-}
-
-.invitation-open .details-panel {
-  transform: translateY(0) scale(1);
-  opacity: 1;
-  visibility: visible;
-}
-
-.story-panel {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: flex-start;
-  gap: 2rem;
-  width: 100% !important;
-  max-width: 100% !important;
-  overflow-x: hidden !important;
-  overflow-y: visible !important;
-  padding: 2rem !important;
-  border-radius: 32px;
-  background: linear-gradient(
-    135deg,
-    rgba(92, 23, 39, 0.95),
-    rgba(13, 43, 21, 0.85) 48%,
-    rgba(255, 255, 255, 0.92)
-  );
-}
-
-.story-panel > * {
-  flex: 1 1 0 !important;
-  max-width: 100% !important;
-}
-
-/* -------------------------------------------------------
-   PHOTO GRID
-------------------------------------------------------- */
-.photo-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.3rem;
-  margin-top: 0 !important;
-}
-
-.photo-card {
-  margin: 0;
-  padding: 0;
-}
-
-.photo-image {
-  width: 100%;
-  aspect-ratio: 2 / 3;
-  object-fit: cover;
-  border-radius: 20px;
-  display: block;
-}
-
-.photo-card figcaption {
-  display: none;
-}
-
-/* -------------------------------------------------------
-   DETAILS GRID
-------------------------------------------------------- */
-.details-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.details-grid > article {
-  background: rgba(255, 255, 255, 0.92);
-  border-radius: 24px;
-  padding: 2rem;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
-  border: 1px solid rgba(212, 175, 55, 0.22);
-}
-
-/* -------------------------------------------------------
-   TYPOGRAPHY
-------------------------------------------------------- */
-.letter h1,
-.letter .names {
-  font-family: 'Great Vibes', cursive;
-  font-size: 3.4rem;
-  color: #1a1a1a;
-  letter-spacing: 0.02em;
-}
-
-.letter p,
-.letter .event,
-.letter .details,
-.letter .eyebrow {
-  font-family: "Inter", serif;
-  color: #2a2a2a;
-  font-weight: 400;
-}
-
-.details-grid h3 {
-  font-family: 'Great Vibes', cursive;
-  font-size: 2.6rem;
-  color: #1a1a1a;
-  text-align: center;
-  margin-bottom: 1rem;
-  margin-top: 0;
-}
-
-.details-grid p {
-  font-family: "Inter", serif;
-  font-size: 1.2rem;
-  line-height: 1.85;
-  color: #222;
-  text-align: center;
-  font-weight: 400;
-}
-
-.page-footer {
-  text-align: center;
-  margin-top: 4rem;
-  padding: 2rem 1rem;
-  font-family: "Inter", serif;
-  font-size: 1.1rem;
-}
-/* -------------------------------------------------------
-   MOBILE OVERRIDES & MOBILE SCREEN BUG FIXES
-------------------------------------------------------- */
-@media (max-width: 768px) {
-  /* 1. Fix the 3-column squish: Force details grid into a clean single column stack */
-  .details-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1.5rem !important;
-  }
-
-  /* Left-align text inside mobile articles for clean editorial readability */
-  .details-grid > article {
-    padding: 1.5rem !important;
-    text-align: left !important;
-  }
-  
-  .details-grid h3 {
-    text-align: left !important;
-    font-size: 2.2rem !important;
-    margin-bottom: 0.5rem !important;
-  }
-  
-  .details-grid p {
-    text-align: left !important;
-    font-size: 0.95rem !important;
-  }
-
-  /* 2. Fix the Story Panel text-crowding: Force flex row into a column */
-  .story-panel {
-    flex-direction: column !important;
-    padding: 1.5rem !important;
-    gap: 1.5rem !important;
-  }
-
-  /* Let the text block and image grid take full width naturally */
-  .story-panel > * {
-    width: 100% !important;
-    flex: none !important;
-  }
-
-  /* Change photo layouts from portrait frames to natural lansdcape boxes on mobile */
-  .photo-grid {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)) !important;
-    gap: 0.8rem !important;
-    width: 100% !important;
-  }
-
-  .photo-image {
-    aspect-ratio: 1 / 1 !important; /* Makes images clean square snapshots on phones */
-    border-radius: 12px !important;
-  }
-
-  /* 3. Scale down your envelope size slightly so it stays fully visible on small viewports */
-  .envelope {
-    width: 340px !important;
-    height: 340px !important;
-  }
-  
-  .envelope-shell {
-    min-height: 36rem !important;
-  }
-  
-  /* Update the SVG parameters to match the smaller envelope bounding box scale */
-  .envelope-flap svg {
-    viewBox: 0 0 340 170 !important;
-  }
-  
-  /* Retune the letter slide distance for the smaller envelope shape */
-  .envelope.open .letter {
-    transform: translate(-50%, -100px) scale(1) !important;
-  }
-}
-/* -------------------------------------------------------
-   LUXURY COUNTDOWN TIMER STYLING
+   COUNTDOWN TIMER
 ------------------------------------------------------- */
 .countdown-shell {
   width: 100%;
   max-width: 480px;
-  margin: 4rem auto 0 auto;
+  margin: 1.5rem auto 0;
   padding: 1.5rem;
   opacity: 0;
   visibility: hidden;
   transform: translateY(20px);
-  /* Staggered delay loop ensures it glides into view beautifully right after the letter rolls out */
-  transition: opacity 1s ease 0.8s, visibility 1s ease 0.8s, transform 1s cubic-bezier(0.22, 1.0, 0.36, 1.0) 0.8s;
+  transition: opacity 0.9s ease 1s,
+              visibility 0.9s ease 1s,
+              transform 0.9s cubic-bezier(0.22, 1.0, 0.36, 1.0) 1s;
 }
 
-/* Reveals the timer automatically alongside the lower details section panel */
 .invitation-open .countdown-shell {
   opacity: 1;
   visibility: visible;
@@ -569,11 +273,11 @@ body::before {
 
 .countdown-title {
   font-family: 'Inter', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #8f2c4b; /* Branded accent burgundy */
+  letter-spacing: 0.12em;
+  color: #8f2c4b;
   margin-bottom: 1.2rem;
   text-align: center;
 }
@@ -595,40 +299,378 @@ body::before {
 .countdown-number {
   font-family: 'Inter', sans-serif;
   font-size: 2.2rem;
-  font-weight: 300; /* Fine-tipped modern numbers */
-  color: #133916;   /* Deep forest green core accent */
+  font-weight: 700;
+  color: #64142e;
   line-height: 1;
   margin-bottom: 0.4rem;
 }
 
 .countdown-label {
   font-family: 'Inter', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #666666;
+  letter-spacing: 0.08em;
+  color: #666;
   font-weight: 500;
 }
 
 .countdown-divider {
   font-size: 1.5rem;
-  color: #d4af37; /* Clean luxury gold dividers */
-  opacity: 0.5;
+  color: #d4af37;
+  opacity: 0.6;
   padding-bottom: 1.2rem;
+  user-select: none;
 }
 
-/* Mobile responsive adjustments */
+/* -------------------------------------------------------
+   BUTTONS
+------------------------------------------------------- */
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition: opacity 0.9s ease 1.1s,
+              visibility 0.9s ease 1.1s,
+              transform 0.9s ease 1.1s;
+}
+
+.invitation-open .button-row {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.tertiary-button {
+  display: inline-block;
+  padding: 0.9rem 2rem;
+  border-radius: 999px;
+  background: #133916;
+  border: 2px solid #d4af37;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.tertiary-button:hover {
+  transform: translateY(-2px);
+  background: #1b4d1f;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+}
+
+/* -------------------------------------------------------
+   DETAILS PANEL
+------------------------------------------------------- */
+.details-panel {
+  width: 100%;
+  margin-top: 2rem;
+  opacity: 0;
+  visibility: hidden;
+  background: linear-gradient(135deg, rgba(19,57,22,0.92), rgba(255,255,255,0.96) 70%);
+  border-radius: 32px;
+  padding: 3rem 2.4rem;
+  box-shadow: 0 34px 70px rgba(0,0,0,0.18);
+  border: 1px solid rgba(212,175,55,0.28);
+  transition: opacity 1s ease 0.4s,
+              visibility 1s ease 0.4s,
+              transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s;
+  transform: translateY(40px) scale(0.98);
+}
+
+.invitation-open .details-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+/* -------------------------------------------------------
+   STORY PANEL
+------------------------------------------------------- */
+.story-panel {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 2rem;
+  width: 100%;
+  padding: 2rem;
+  border-radius: 32px;
+  background: linear-gradient(135deg, rgba(92,23,39,0.95), rgba(13,43,21,0.85) 48%, rgba(255,255,255,0.92));
+  overflow: hidden;
+}
+
+.story-panel > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.text-block {
+  color: #f3ece7;
+}
+
+.text-block .eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #d4af37;
+  margin-bottom: 0.5rem;
+}
+
+.text-block h2 {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.8rem;
+  color: #fff;
+  margin: 0 0 1.2rem;
+  line-height: 1.2;
+}
+
+.text-block p {
+  font-size: 0.92rem;
+  line-height: 1.8;
+  color: rgba(243,236,231,0.85);
+  margin-bottom: 0.9rem;
+}
+
+/* -------------------------------------------------------
+   PHOTO GRID
+------------------------------------------------------- */
+.photo-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.photo-card {
+  margin: 0;
+  padding: 0;
+}
+
+.photo-image {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+}
+
+/* -------------------------------------------------------
+   DETAILS GRID
+------------------------------------------------------- */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
+  padding: 0;
+}
+
+.details-grid > article {
+  background: rgba(255,255,255,0.92);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+  border: 1px solid rgba(212,175,55,0.22);
+}
+
+.details-grid h3 {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.4rem;
+  color: #133916;
+  text-align: center;
+  margin: 0 0 1rem;
+}
+
+.details-grid p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: #333;
+  margin-bottom: 0.75rem;
+}
+
+.travel-warning {
+  margin-top: 1rem;
+  padding: 1rem 1.2rem;
+  background: rgba(212,175,55,0.1);
+  border-left: 3px solid #d4af37;
+  border-radius: 8px;
+}
+
+.travel-warning strong {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8f2c4b;
+  margin-bottom: 0.4rem;
+}
+
+.travel-warning p {
+  font-size: 0.875rem;
+  color: #444;
+  margin: 0;
+}
+
+.highlight-action {
+  font-style: italic;
+  color: #133916 !important;
+  font-weight: 500 !important;
+}
+
+/* -------------------------------------------------------
+   LETTER TYPOGRAPHY
+------------------------------------------------------- */
+.letter h1 {
+  font-family: 'Great Vibes', cursive;
+  font-size: 3.2rem;
+  color: #1a1a1a;
+  margin: 0.5rem 0;
+  line-height: 1.1;
+}
+
+.letter .eyebrow {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #8f2c4b;
+  margin-bottom: 0.25rem;
+}
+
+.letter .event {
+  font-size: 0.95rem;
+  color: #555;
+  margin: 0.4rem 0;
+}
+
+.letter .details {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #133916;
+  letter-spacing: 0.05em;
+  margin-top: 0.5rem;
+}
+
+/* -------------------------------------------------------
+   MOBILE OVERRIDES
+------------------------------------------------------- */
 @media (max-width: 640px) {
-  .countdown-shell {
-    margin-top: 5rem;
+  .page-shell {
+    padding: 1rem 0.75rem 2rem;
   }
+
+  .card {
+    border-radius: 24px;
+  }
+
+  .card > * {
+    padding: 1.25rem;
+  }
+
+  /* Scale envelope down to fit mobile */
+  .envelope-shell {
+    height: 360px;
+  }
+
+  .invitation-open .envelope-shell {
+    height: 240px;
+  }
+
+  .envelope {
+    width: 320px;
+    height: 320px;
+  }
+
+  .invitation-open .envelope {
+    transform: translateY(110px) rotateX(0deg);
+  }
+
+  .envelope.open .letter {
+    transform: translate(-50%, -90px) scale(1);
+  }
+
+  .letter {
+    padding: 2rem 1.5rem;
+  }
+
+  .letter h1 {
+    font-size: 2.4rem;
+  }
+
+  /* Countdown */
   .countdown-number {
     font-size: 1.8rem;
+    color: #64142e;
   }
+
   .countdown-container {
+    gap: 0.5rem;
+  }
+
+  .countdown-block {
+    min-width: 44px;
+  }
+
+  /* Story panel stacks vertically */
+  .story-panel {
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .story-panel > * {
+    width: 100%;
+    flex: none;
+  }
+
+  .text-block h2 {
+    font-size: 2.2rem;
+  }
+
+  /* Photos become square row */
+  .photo-grid {
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.6rem;
   }
-  .countdown-block {
-    min-width: 50px;
+
+  .photo-image {
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+  }
+
+  /* Details stack single column */
+  .details-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .details-grid > article {
+    padding: 1.5rem;
+  }
+
+  .details-grid h3 {
+    font-size: 2rem;
+    text-align: left;
+  }
+
+  .details-grid p {
+    font-size: 0.9rem;
+    text-align: left;
+  }
+
+  .details-panel {
+    padding: 1.5rem 1rem;
+    border-radius: 20px;
   }
 }

@@ -4,49 +4,51 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#2f121b" />
-  <title>Gavin & Jessica | Wedding Invitation</title>
+  <title>Gavin &amp; Jessica | Wedding Invitation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <!-- Page shell wrapper centers your card perfectly and stops background bleeding -->
   <div class="page-shell">
-    
-    <!-- Cleaned main tag (no overriding inline styles) -->
     <main class="card">
+
+      <!-- ── HERO PANEL ── -->
       <section class="hero-panel">
-        <div class="envelope-shell">
+
+        <div class="envelope-shell clickable-envelope" id="envelopeShell" onclick="openInvitationFromEnvelope()">
           <div class="envelope" id="envelope">
+
             <div class="envelope-body"></div>
-            <!-- Replace your old envelope-flap element with this modern curved SVG version -->
-<div class="envelope-flap">
-  <svg viewBox="0 0 480 240" preserveAspectRatio="none">
-    <!-- Main Green Flap Geometry Slices -->
-    <path d="M 0 0 L 480 0 L 240 240 Z" fill="#1b4d1f" />
-    <!-- Polished Gold Trim Path Tracking Along the Precise Angle Creases -->
-    <path d="M 3 0 L 477 0 L 240 237 Z" fill="none" stroke="#d4af37" stroke-width="3" />
-  </svg>
-</div>
+
+            <div class="envelope-flap">
+              <svg viewBox="0 0 480 240" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M 0 0 L 480 0 L 240 240 Z" fill="#1b4d1f" />
+                <path d="M 3 0 L 477 0 L 240 237 Z" fill="none" stroke="#d4af37" stroke-width="3" />
+              </svg>
+            </div>
 
             <div class="seal" id="waxSeal">
-  <div class="seal-half left"></div>
-  <div class="seal-half right"></div>
-</div>
+              <div class="seal-half left"></div>
+              <div class="seal-half right"></div>
+            </div>
 
             <div class="letter">
               <p class="eyebrow">A personal invitation</p>
-              <h1>Gavin & Jessica</h1>
+              <h1>Gavin &amp; Jessica</h1>
               <p class="event">invite you to celebrate their wedding at</p>
               <p class="details">Lartington Hall · 28 Feb 2027 · 12:30 PM</p>
             </div>
+
           </div>
         </div>
 
-        
-        <!-- 🌟 NEW: LUXURY COUNTDOWN TIMER MODULE (Revealed smoothly on open) -->
+        <!-- Tap prompt — hidden once opened -->
+        <p class="tap-hint" id="tapHint" aria-live="polite">Tap the envelope to open</p>
+
+        <!-- Countdown — revealed on open -->
         <div class="countdown-shell" id="countdownShell">
           <div class="countdown-title">Counting down to the big day</div>
           <div class="countdown-container">
@@ -54,94 +56,102 @@
               <span class="countdown-number" id="days">--</span>
               <span class="countdown-label">Days</span>
             </div>
-            <div class="countdown-divider">•</div>
+            <div class="countdown-divider" aria-hidden="true">•</div>
             <div class="countdown-block">
               <span class="countdown-number" id="hours">--</span>
               <span class="countdown-label">Hours</span>
             </div>
-            <div class="countdown-divider">•</div>
+            <div class="countdown-divider" aria-hidden="true">•</div>
             <div class="countdown-block">
               <span class="countdown-number" id="minutes">--</span>
               <span class="countdown-label">Mins</span>
             </div>
-            <div class="countdown-divider">•</div>
+            <div class="countdown-divider" aria-hidden="true">•</div>
             <div class="countdown-block">
               <span class="countdown-number" id="seconds">--</span>
               <span class="countdown-label">Secs</span>
             </div>
           </div>
         </div>
-        
+
+        <!-- RSVP button — revealed on open -->
         <div class="button-row">
-          <button class="secondary-button" id="openButton" type="button">Open the invitation</button>
-          <a class="tertiary-button" href="rsvp.html">RSVP and details</a>
+          <a class="tertiary-button" href="rsvp.html">RSVP &amp; Details</a>
         </div>
 
-      </section> <!-- Closes your hero-panel -->
+      </section>
 
+      <!-- ── DETAILS PANEL (revealed on open) ── -->
       <div class="details-panel" id="detailsPanel">
+
+        <!-- Story + photos -->
         <section class="section story-panel">
           <div class="text-block">
             <p class="eyebrow">Our story</p>
             <h2>From first hello to "I do"</h2>
-            <p>Our story began in the summer of 2021, when Gavin joined Match.com “just to support a friend,” then immediately forgot that noble mission and messaged Jess instead. Against all known laws of online dating, it became one of those rare internet matches that actually works; the kind people swear only happens in adverts.</p>
-            <p>We met at South Shields seafront for what was meant to be a quick chat. Instead, we talked for so long that the pub had to politely escort us out because we didn’t notice it was closing. It was the kind of first date that makes you think, “Okay… either this is fate, or we’ve both accidentally catfished each other in a good way.”</p>
-            <p>Since then, life together has been a blend of romance, chaos, and Gavin’s questionable navigation skills. With holidays to Tenerife, London, and Japan, where Gavin managed to get us lost in Shinjuku Station for hours while searching for Godzilla’s head. We eventually ended up four miles in the wrong direction, wandering through the business district like two tourists who’d lost both the plot and the map.</p>
-            <p>In January 2024, we bought our first home. Within a week, we also adopted our dog, Zico. Jess had rules: small to medium dog, sensible breed, manageable size. Gavin ignored every single one. He returned with a 50kg German Shepherd–Belgian Malinois mix who has the energy of a caffeinated toddler, the opinions of a talk‑show host, and the vocal range of a foghorn. He loves everyone, never stops talking, and argues with Gavin daily, and loudly, like a furry, four‑legged union rep, often winning.</p>
-            <p>That summer, Gavin proposed, dropping to one knee like a budget Disney prince who’d rehearsed this moment in his head a thousand times. Jess, five duck‑sauce cocktails deep, responded with the immortal words: “Are you serious or taking the piss?” Gavin remained on one knee long enough to consider early retirement, but eventually she said yes.</p>
-            <p>Jess insisted on a ruby ring, not because she “didn’t want anything too expensive,” but because ruby is the birthstone they share. Born 368 days apart it felt like the perfect symbol of two lives that were always meant to meet.</p>
-            <p>Now, after years of travel, laughter, late‑night conversations, and one very spoiled dog, we’re ready for the next chapter; and we can't wait to celebrate it with you.</p>
+            <p>Our story began in the summer of 2021, when Gavin joined Match.com "just to support a friend," then immediately forgot that noble mission and messaged Jess instead. Against all known laws of online dating, it became one of those rare internet matches that actually works — the kind people swear only happens in adverts.</p>
+            <p>We met at South Shields seafront for what was meant to be a quick chat. Instead, we talked for so long that the pub had to politely escort us out because we didn't notice it was closing. It was the kind of first date that makes you think, "Okay… either this is fate, or we've both accidentally catfished each other in a good way."</p>
+            <p>Since then, life together has been a blend of romance, chaos, and Gavin's questionable navigation skills. With holidays to Tenerife, London, and Japan — where Gavin managed to get us lost in Shinjuku Station for hours while searching for Godzilla's head. We eventually ended up four miles in the wrong direction, wandering through the business district like two tourists who'd lost both the plot and the map.</p>
+            <p>In January 2024, we bought our first home. Within a week, we also adopted our dog, Zico. Jess had rules: small to medium dog, sensible breed, manageable size. Gavin ignored every single one. He returned with a 50kg German Shepherd–Belgian Malinois mix who has the energy of a caffeinated toddler, the opinions of a talk‑show host, and the vocal range of a foghorn. He loves everyone, never stops talking, and argues with Gavin daily — loudly, like a furry, four‑legged union rep, often winning.</p>
+            <p>That summer, Gavin proposed, dropping to one knee like a budget Disney prince who'd rehearsed this moment in his head a thousand times. Jess, five duck‑sauce cocktails deep, responded with the immortal words: "Are you serious or taking the piss?" Gavin remained on one knee long enough to consider early retirement, but eventually she said yes.</p>
+            <p>Jess insisted on a ruby ring — not because she "didn't want anything too expensive," but because ruby is the birthstone they share. Born 368 days apart, it felt like the perfect symbol of two lives that were always meant to meet.</p>
+            <p>Now, after years of travel, laughter, late‑night conversations, and one very spoiled dog, we're ready for the next chapter — and we can't wait to celebrate it with you.</p>
           </div>
-          
+
           <div class="photo-grid">
             <figure class="photo-card">
-              <img src="assets/tenerife.jpg" alt="Special moment" class="photo-image" />
-              <figcaption>Special moment</figcaption>
+              <img src="assets/tenerife.jpg" alt="Gavin and Jessica in Tenerife" class="photo-image" loading="lazy" />
             </figure>
             <figure class="photo-card">
-              <img src="assets/all of us.jpg" alt="Family memory" class="photo-image" />
-              <figcaption>Family memory</figcaption>
+              <img src="assets/all of us.jpg" alt="Family memory" class="photo-image" loading="lazy" />
             </figure>
             <figure class="photo-card">
-              <img src="assets/godzilla.jpg" alt="Couple portrait" class="photo-image" />
-              <figcaption>Couple portrait</figcaption>
+              <img src="assets/godzilla.jpg" alt="Couple portrait" class="photo-image" loading="lazy" />
             </figure>
           </div>
         </section>
-          <article>
-            <section class="section details-grid">
-  <article>
-    <h3>Venue</h3>
-    <p>Lartington Hall, County Durham. A beautiful historic estate with gardens, manor rooms, and warm hospitality.</p>
-  </article>
-  
-  <article>
-    <h3>Event schedule</h3>
-    <p>Arrival from 11AM for welcome drinks and early seating, followed by the 12:30 PM ceremony, and then the dinner and reception.</p>
-    <div class="travel-warning">
-      <strong>Important Travel Note</strong>
-      <p>Taxis are highly difficult to hire spontaneously in this rural area. There is a very limited availability for them at night in Barnard Castle, so we strongly advise booking your midnight transport weeks in advance.</p>
-    </div>
-  </article>
-  
-  <article>
-    <h3>accomedation</h3>
-    <p>There are limited boutique rooms available on-site at <strong>Lartington Hall</strong>.</p>
-    <p>Further luxury rooms are available at our sister venue, <strong>Runa Farm</strong>, which is just a short 11-minute drive away.</p>
-    <p class="highlight-action">Please contact the venue accomedation team directly to check availability and book your stay.</p>
-  </article>
-</section>
 
+        <!-- Venue / Schedule / Accommodation -->
+        <section class="section details-grid">
+          <article>
+            <h3>Venue</h3>
+            <p>Lartington Hall, County Durham. A beautiful historic estate with gardens, manor rooms, and warm hospitality.</p>
+          </article>
+
+          <article>
+            <h3>Event Schedule</h3>
+            <p>Arrival from 11 AM for welcome drinks and early seating, followed by the 12:30 PM ceremony, and then the dinner and reception.</p>
+            <div class="travel-warning">
+              <strong>Important Travel Note</strong>
+              <p>Taxis are very difficult to hire spontaneously in this rural area. There is very limited availability at night in Barnard Castle — please book your midnight transport weeks in advance.</p>
+            </div>
+          </article>
+
+          <article>
+            <h3>Accommodation</h3>
+            <p>There are limited boutique rooms available on-site at <strong>Lartington Hall</strong>.</p>
+            <p>Further luxury rooms are available at our sister venue, <strong>Runa Farm</strong>, just a short 11-minute drive away.</p>
+            <p class="highlight-action">Please contact the venue accommodation team directly to check availability and book your stay.</p>
           </article>
         </section>
-      </article>
-        </section>
-      </div>
-    </main>
 
+      </div>
+      <!-- /.details-panel -->
+
+    </main>
   </div>
 
-  <script src="main.js" defer></script>
-  <script src="script.js"></script>
+<script src="main.js"></script>
+<script src="script.js"></script>
+  <script>
+ function openInvitationFromEnvelope() {
+    if (document.body.classList.contains("invitation-open")) return;
+    openEnvelope();
+    const hint = document.getElementById("tapHint");
+    if (hint) hint.style.display = "none";
+    const shell = document.getElementById("envelopeShell");
+    if (shell) shell.onclick = null;
+  }
+</script>
 </body>
 </html>
