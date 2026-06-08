@@ -472,3 +472,76 @@ body::before {
   padding: 2rem 1rem;
   font-family: "Inter", serif;
   font-size: 1.1rem;
+}
+/* -------------------------------------------------------
+   MOBILE OVERRIDES & MOBILE SCREEN BUG FIXES
+------------------------------------------------------- */
+@media (max-width: 768px) {
+  /* 1. Fix the 3-column squish: Force details grid into a clean single column stack */
+  .details-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  /* Left-align text inside mobile articles for clean editorial readability */
+  .details-grid > article {
+    padding: 1.5rem !important;
+    text-align: left !important;
+  }
+  
+  .details-grid h3 {
+    text-align: left !important;
+    font-size: 2.2rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .details-grid p {
+    text-align: left !important;
+    font-size: 0.95rem !important;
+  }
+
+  /* 2. Fix the Story Panel text-crowding: Force flex row into a column */
+  .story-panel {
+    flex-direction: column !important;
+    padding: 1.5rem !important;
+    gap: 1.5rem !important;
+  }
+
+  /* Let the text block and image grid take full width naturally */
+  .story-panel > * {
+    width: 100% !important;
+    flex: none !important;
+  }
+
+  /* Change photo layouts from portrait frames to natural lansdcape boxes on mobile */
+  .photo-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)) !important;
+    gap: 0.8rem !important;
+    width: 100% !important;
+  }
+
+  .photo-image {
+    aspect-ratio: 1 / 1 !important; /* Makes images clean square snapshots on phones */
+    border-radius: 12px !important;
+  }
+
+  /* 3. Scale down your envelope size slightly so it stays fully visible on small viewports */
+  .envelope {
+    width: 340px !important;
+    height: 340px !important;
+  }
+  
+  .envelope-shell {
+    min-height: 36rem !important;
+  }
+  
+  /* Update the SVG parameters to match the smaller envelope bounding box scale */
+  .envelope-flap svg {
+    viewBox: 0 0 340 170 !important;
+  }
+  
+  /* Retune the letter slide distance for the smaller envelope shape */
+  .envelope.open .letter {
+    transform: translate(-50%, -100px) scale(1) !important;
+  }
+}
