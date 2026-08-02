@@ -16,6 +16,24 @@ const ROOM_REQUIRED_OPTIONS = [
   { value: 'yes', label: 'Yes' }
 ];
 
+const ROOM_BOOKING_STORAGE_PREFIX = 'roomBookingRequested:';
+
+function markRoomBookingRequested(code) {
+  try {
+    localStorage.setItem(`${ROOM_BOOKING_STORAGE_PREFIX}${code}`, '1');
+  } catch (err) {
+    console.warn('Unable to save room booking state', err);
+  }
+}
+
+function hasRoomBookingRequested(code) {
+  try {
+    return localStorage.getItem(`${ROOM_BOOKING_STORAGE_PREFIX}${code}`) === '1';
+  } catch (err) {
+    return false;
+  }
+}
+
 let currentCode = null;
 let currentMaxGuests = 0;
 
@@ -64,6 +82,11 @@ function handleLookup() {
 
       currentCode = data.code;
       currentMaxGuests = data.maxGuests || 1;
+
+      if (hasRoomBookingRequested(currentCode)) {
+        window.location.href = `room-booking.html?code=${encodeURIComponent(currentCode)}`;
+        return;
+      }
 
       guestDisplayName.textContent = data.displayName || 'Your party';
       maxGuestsText.textContent = currentMaxGuests;
@@ -222,6 +245,7 @@ function handleSubmit(e) {
 
       const wantsRoom = guests.some(guest => guest.roomRequired && guest.roomCount > 0);
       if (wantsRoom) {
+        markRoomBookingRequested(currentCode);
         window.location.href = `room-booking.html?code=${encodeURIComponent(currentCode)}`;
         return;
       }
