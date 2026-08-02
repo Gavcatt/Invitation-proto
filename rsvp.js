@@ -220,6 +220,12 @@ function handleSubmit(e) {
         return;
       }
 
+      const wantsRoom = guests.some(guest => guest.roomRequired && guest.roomCount > 0);
+      if (wantsRoom) {
+        window.location.href = `room-booking.html?code=${encodeURIComponent(currentCode)}`;
+        return;
+      }
+
       document.querySelector('.rsvp-header').style.setProperty('display', 'none', 'important');
       formSection.style.setProperty('display', 'none', 'important');
       rsvpForm.reset();
