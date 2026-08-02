@@ -16,26 +16,75 @@ const ROOM_REQUIRED_OPTIONS = [
   { value: 'yes', label: 'Yes' }
 ];
 
-const ROOM_BOOKING_STORAGE_PREFIX = 'roomBookingRequested:';
+const ROOM_BOOKING_STORAGE_PREFIX = 'roomBookingState:';
 
-function markRoomBookingRequested(code) {
+function markRoomBookingState(code, state) {
   try {
-    localStorage.setItem(`${ROOM_BOOKING_STORAGE_PREFIX}${code}`, '1');
+    localStorage.setItem(`${ROOM_BOOKING_STORAGE_PREFIX}${code}`, JSON.stringify(state));
   } catch (err) {
     console.warn('Unable to save room booking state', err);
   }
 }
 
-function hasRoomBookingRequested(code) {
+function getRoomBookingState(code) {
   try {
-    return localStorage.getItem(`${ROOM_BOOKING_STORAGE_PREFIX}${code}`) === '1';
+    const payload = localStorage.getItem(`${ROOM_BOOKING_STORAGE_PREFIX}${code}`);
+    return payload ? JSON.parse(payload) : null;
   } catch (err) {
-    return false;
+    return null;
   }
+}
+
+function hasCompleteRoomBooking(code) {
+  const state = getRoomBookingState(code);
+  if (state && state.complete === true && state.roomRequired === true) {
+    return true;
+  }
+
+  try {
+    const legacy = localStorage.getItem(`roomBookingRequested:${code}`);
+    if (legacy === '1') {
+      markRoomBookingState(code, { complete: true, roomRequired: true });
+      return true;
+    }
+  } catch (err) {
+    // ignore storage errors
+  }
+
+  return false;
+}
+
+function isCompleteRoomBookingResponse(data) {
+  return !!(
+    data?.roomBookingComplete === true ||
+    (data?.complete === true && data?.roomRequired === true) ||
+    (data?.roomRequired === true && data?.allGuestsResponded === true)
+  );
 }
 
 let currentCode = null;
 let currentMaxGuests = 0;
+
+function showBookingInfo() {
+  document.getElementById('booking-info-section').style.setProperty('display', 'block', 'important');
+  document.getElementById('form-section').style.setProperty('display', 'none', 'important');
+  document.getElementById('success-section').style.setProperty('display', 'none', 'important');
+}
+
+function hideBookingInfo() {
+  document.getElementById('booking-info-section').style.setProperty('display', 'none', 'important');
+}
+
+function showAlreadyRespondedNoRoom() {
+  // Everyone in the party has already RSVP'd and nobody needed a room.
+  // Nothing left for them to do, so just show the same "thank you" state
+  // used after a fresh submission.
+  hideBookingInfo();
+  formSection.style.setProperty('display', 'none', 'important');
+  const header = document.querySelector('.rsvp-header');
+  if (header) header.style.setProperty('display', 'none', 'important');
+  document.getElementById('success-section').style.setProperty('display', 'block', 'important');
+}
 
 lookupBtn.addEventListener('click', handleLookup);
 codeInput.addEventListener('keydown', (e) => {
@@ -83,11 +132,19 @@ function handleLookup() {
       currentCode = data.code;
       currentMaxGuests = data.maxGuests || 1;
 
-      if (hasRoomBookingRequested(currentCode)) {
-        window.location.href = `room-booking.html?code=${encodeURIComponent(currentCode)}`;
+      // Everyone has already responded and nobody needs a room — nothing left to show.
+      if (data.allGuestsResponded && !data.roomRequired) {
+        showAlreadyRespondedNoRoom();
         return;
       }
 
+      if (isCompleteRoomBookingResponse(data)) {
+        markRoomBookingState(currentCode, { complete: true, roomRequired: true });
+        showBookingInfo();
+        return;
+      }
+
+      hideBookingInfo();
       guestDisplayName.textContent = data.displayName || 'Your party';
       maxGuestsText.textContent = currentMaxGuests;
 
@@ -191,18 +248,21 @@ function handleSubmit(e) {
   submitBtn.textContent = 'Submitting...';
 
   const guests = [];
+  let respondedCount = 0;
+
   for (let i = 1; i <= currentMaxGuests; i++) {
     const attendingEl = document.getElementById(`guest-attending-${i}`);
     if (!attendingEl) continue;
 
     const attendingValue = attendingEl.value;
-    if (attendingValue === "") {
-      continue; 
+    if (attendingValue !== "") {
+      respondedCount += 1;
+    } else {
+      continue;
     }
 
     const nameEl = document.getElementById(`guest-name-${i}`);
     const nameVal = nameEl ? nameEl.value.trim() : '';
-    if (!nameVal) continue;
 
     const seatMarkerEl = document.getElementById(`guest-seat-marker-${i}`);
     const absoluteSeatIndex = seatMarkerEl ? Number(seatMarkerEl.value) : i;
@@ -222,7 +282,7 @@ function handleSubmit(e) {
     });
   }
 
-  const allGuestsRsvped = guests.length === currentMaxGuests;
+  const allGuestsRsvped = respondedCount === currentMaxGuests;
 
   if (guests.length === 0) {
     showMessage(formMessage, 'Please select the "Attending" status for at least one guest before submitting.', 'error');
@@ -247,8 +307,8 @@ function handleSubmit(e) {
 
       const wantsRoom = guests.some(guest => guest.roomRequired && guest.roomCount > 0);
       if (wantsRoom && allGuestsRsvped) {
-        markRoomBookingRequested(currentCode);
-        window.location.href = `room-booking.html?code=${encodeURIComponent(currentCode)}`;
+        markRoomBookingState(currentCode, { complete: true, roomRequired: true });
+        showBookingInfo();
         return;
       }
 
