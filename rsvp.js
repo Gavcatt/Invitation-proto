@@ -222,6 +222,8 @@ function handleSubmit(e) {
     });
   }
 
+  const allGuestsRsvped = guests.length === currentMaxGuests;
+
   if (guests.length === 0) {
     showMessage(formMessage, 'Please select the "Attending" status for at least one guest before submitting.', 'error');
     submitBtn.disabled = false;
@@ -244,7 +246,7 @@ function handleSubmit(e) {
       }
 
       const wantsRoom = guests.some(guest => guest.roomRequired && guest.roomCount > 0);
-      if (wantsRoom) {
+      if (wantsRoom && allGuestsRsvped) {
         markRoomBookingRequested(currentCode);
         window.location.href = `room-booking.html?code=${encodeURIComponent(currentCode)}`;
         return;
