@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTeYHEMBUFrCC8suJEPew9bdHRERUI9RqNmM04T-LGtpYstdAOBqJzA_cnFoj6o_Q8/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbybUUHfF1dsXjMOCckDWSExHKbrQAzFajNgaLyQ80dvRpb5B5tFLr0KfsPelXnV9CO6/exec';
 
 const codeInput = document.getElementById('rsvp-code');
 const lookupBtn = document.getElementById('lookup-btn');
@@ -11,13 +11,9 @@ const guestBlocksContainer = document.getElementById('guest-blocks');
 const rsvpForm = document.getElementById('rsvp-form');
 const formMessage = document.getElementById('form-message');
 
-const MENU_OPTIONS = [
-  'Chicken',
-  'Beef',
-  'Vegetarian',
-  'Vegan',
-  'Child\'s Meal',
-  'Other'
+const ROOM_REQUIRED_OPTIONS = [
+  { value: 'no', label: 'No' },
+  { value: 'yes', label: 'Yes' }
 ];
 
 let currentCode = null;
@@ -117,9 +113,17 @@ function buildGuestBlocks(maxGuests, prepopulatedNames = [], originalIndexes = [
           </select>
         </div>
         <div>
-          <label class="field-label" for="guest-menu-${i}">Menu Preference</label>
-          <select id="guest-menu-${i}" class="select-input">
-            ${MENU_OPTIONS.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+          <label class="field-label" for="guest-room-${i}">Room required</label>
+          <select id="guest-room-${i}" class="select-input">
+            ${ROOM_REQUIRED_OPTIONS.map(opt => `<option value="${opt.value}">${opt.label}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="guest-room-count-${i}">How many rooms?</label>
+          <select id="guest-room-count-${i}" class="select-input">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
           </select>
         </div>
       </div>
@@ -128,6 +132,22 @@ function buildGuestBlocks(maxGuests, prepopulatedNames = [], originalIndexes = [
         <textarea id="guest-dietary-${i}" class="textarea-input" placeholder="Please note any allergies or specific dietary requirements..."></textarea>
       </div>
     `;
+
+    const roomSelect = block.querySelector(`#guest-room-${i}`);
+    const roomCountSelect = block.querySelector(`#guest-room-count-${i}`);
+
+    function syncRoomCountState() {
+      const needsRoom = roomSelect?.value === 'yes';
+      if (roomCountSelect) {
+        roomCountSelect.disabled = !needsRoom;
+        if (!needsRoom && roomCountSelect.value !== '0') {
+          roomCountSelect.value = '0';
+        }
+      }
+    }
+
+    roomSelect?.addEventListener('change', syncRoomCountState);
+    syncRoomCountState();
 
     guestBlocksContainer.appendChild(block);
   }
@@ -164,11 +184,17 @@ function handleSubmit(e) {
     const seatMarkerEl = document.getElementById(`guest-seat-marker-${i}`);
     const absoluteSeatIndex = seatMarkerEl ? Number(seatMarkerEl.value) : i;
 
+    const roomSelectEl = document.getElementById(`guest-room-${i}`);
+    const roomCountEl = document.getElementById(`guest-room-count-${i}`);
+    const needsRoom = roomSelectEl ? roomSelectEl.value === 'yes' : false;
+    const roomCountValue = needsRoom ? Math.min(Number(roomCountEl?.value || 0), 2) : 0;
+
     guests.push({
       originalIndex: absoluteSeatIndex, 
       name: nameVal,
       attending: attendingValue === 'yes',
-      menu: document.getElementById(`guest-menu-${i}`).value,
+      roomRequired: needsRoom,
+      roomCount: roomCountValue,
       dietary: document.getElementById(`guest-dietary-${i}`).value.trim()
     });
   }
