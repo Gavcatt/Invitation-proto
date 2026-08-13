@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbybUUHfF1dsXjMOCckDWSExHKbrQAzFajNgaLyQ80dvRpb5B5tFLr0KfsPelXnV9CO6/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZCzTZLlRlJuC97JSOaQghOuDtySHH4H8VdSfrxm-JzGJe1QwpfyJBfQKrByL17q9k/exec';
 
 const codeInput = document.getElementById('rsvp-code');
 const lookupBtn = document.getElementById('lookup-btn');
@@ -138,6 +138,9 @@ function handleLookup() {
         return;
       }
 
+      // Debug: log server payload for troubleshooting
+      try { console.debug('RSVP lookup response:', data); } catch (e) {}
+
       // Try to derive server-side response details if provided.
       const serverResponses = data.responses || data.guestResponses || data.guests || null;
       let serverAllResponded = false;
@@ -148,12 +151,18 @@ function handleLookup() {
         serverAnyRoomRequested = serverResponses.some(r => r && (r.roomRequired === true || (r.roomCount && Number(r.roomCount) > 0) || r.roomRequired === 'yes'));
       }
 
+      // Debug: report derived server flags
+      try { console.debug('Derived serverAllResponded:', serverAllResponded, 'serverAnyRoomRequested:', serverAnyRoomRequested, 'isCompleteRoomBookingResponse:', isCompleteRoomBookingResponse(data)); } catch (e) {}
+
       // If server data or existing local state indicates completion + room required, show booking info.
       if (isCompleteRoomBookingResponse(data) || (serverAllResponded && serverAnyRoomRequested)) {
         markRoomBookingState(currentCode, { complete: true, roomRequired: true });
         showBookingInfo();
         return;
       }
+
+      // Debug: check local stored booking state
+      try { console.debug('hasCompleteRoomBooking', hasCompleteRoomBooking(currentCode)); } catch (e) {}
 
       if (hasCompleteRoomBooking(currentCode)) {
         showBookingInfo();
