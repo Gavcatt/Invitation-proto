@@ -138,12 +138,29 @@ function handleLookup() {
         return;
       }
 
-      if (isCompleteRoomBookingResponse(data)) {
+      // Try to derive server-side response details if provided.
+      const serverResponses = data.responses || data.guestResponses || data.guests || null;
+      let serverAllResponded = false;
+      let serverAnyRoomRequested = false;
+
+      if (Array.isArray(serverResponses)) {
+        serverAllResponded = serverResponses.length === currentMaxGuests && serverResponses.every(r => r && (r.attending === true || r.attending === false || r.attending === 'yes' || r.attending === 'no'));
+        serverAnyRoomRequested = serverResponses.some(r => r && (r.roomRequired === true || (r.roomCount && Number(r.roomCount) > 0) || r.roomRequired === 'yes'));
+      }
+
+      // If server data or existing local state indicates completion + room required, show booking info.
+      if (isCompleteRoomBookingResponse(data) || (serverAllResponded && serverAnyRoomRequested)) {
         markRoomBookingState(currentCode, { complete: true, roomRequired: true });
         showBookingInfo();
         return;
       }
 
+      if (hasCompleteRoomBooking(currentCode)) {
+        showBookingInfo();
+        return;
+      }
+
+      // Otherwise show the RSVP capture form as normal.
       hideBookingInfo();
       guestDisplayName.textContent = data.displayName || 'Your party';
       maxGuestsText.textContent = currentMaxGuests;
@@ -151,6 +168,7 @@ function handleLookup() {
       buildGuestBlocks(currentMaxGuests, data.prepopulatedNames || [], data.originalIndexes || []);
       
       formSection.style.setProperty('display', 'block', 'important');
+      document.querySelector('.rsvp-header').style.removeProperty('display');
       showMessage(codeMessage, '', null);
     })
     .catch(err => {
