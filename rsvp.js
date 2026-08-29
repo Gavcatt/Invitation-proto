@@ -119,8 +119,14 @@ function handleLookup() {
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({ action: 'lookup', code })
   })
-    .then(res => {
-      if (!res.ok) throw new Error('Network response failure');
+    .then(async res => {
+      if (!res.ok) {
+        // attempt to capture response text for better diagnostics
+        let txt = null;
+        try { txt = await res.text(); } catch (e) { /* ignore */ }
+        const message = `Server responded ${res.status} ${res.statusText}${txt ? ': ' + txt : ''}`;
+        throw new Error(message);
+      }
       return res.json();
     })
     .then(data => {
@@ -181,8 +187,9 @@ function handleLookup() {
       showMessage(codeMessage, '', null);
     })
     .catch(err => {
-      console.error(err);
-      showMessage(codeMessage, 'Error contacting server.', 'error');
+      console.error('RSVP lookup error:', err);
+      const userMsg = err && err.message ? `Error contacting server: ${err.message}` : 'Error contacting server.';
+      showMessage(codeMessage, userMsg, 'error');
     })
     .finally(() => {
       lookupBtn.disabled = false;
